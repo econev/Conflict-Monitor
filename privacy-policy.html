@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy — Global Conflict Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060a0e;
+  --bg2:#0a0f14;
+  --bg3:#0e1520;
+  --panel:#0b1119;
+  --border:#162030;
+  --border2:#1e3045;
+  --text:#d4dde6;
+  --text-soft:#607a92;
+  --text-dim:#3a5060;
+  --red:#ff2d2d;
+  --accent:#00c8ff;
+  --green:#00e676;
+  --radius:8px;
+  font-family:'Syne',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.7;
+  min-height:100vh;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ===== TOPBAR ===== */
+.topbar{
+  position:sticky;top:0;z-index:100;
+  height:52px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+  background:rgba(6,10,14,0.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  gap:16px;
+}
+.topbar-logo{display:flex;align-items:center;gap:10px}
+.topbar-logo svg{width:26px;height:26px;flex-shrink:0}
+.logo-text{font-size:14px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:#fff}
+.logo-sub{font-size:9px;color:var(--text-soft);letter-spacing:0.1em;font-family:'JetBrains Mono',monospace}
+.topbar-back{
+  display:flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:600;color:var(--text-soft);
+  padding:6px 14px;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--bg3);
+  transition:all 0.2s;letter-spacing:0.03em;
+  text-decoration:none;
+}
+.topbar-back:hover{color:var(--text);border-color:var(--border2);text-decoration:none}
+.topbar-back svg{width:14px;height:14px}
+
+/* ===== LAYOUT ===== */
+.page-wrap{
+  display:grid;
+  grid-template-columns:240px 1fr;
+  max-width:1100px;
+  margin:0 auto;
+  padding:40px 24px 80px;
+  gap:40px;
+  align-items:start;
+}
+
+/* ===== SIDEBAR TOC ===== */
+.toc{
+  position:sticky;top:72px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:20px;
+}
+.toc-title{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;
+  color:var(--text-dim);font-family:'JetBrains Mono',monospace;
+  margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)
+}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-list li a{
+  display:block;font-size:12px;color:var(--text-soft);
+  padding:6px 10px;border-radius:6px;transition:all 0.18s;
+  line-height:1.3;
+}
+.toc-list li a:hover{color:var(--text);background:var(--bg3);text-decoration:none}
+.toc-list li a.active{color:var(--accent);background:rgba(0,200,255,0.07)}
+.toc-badge{
+  display:inline-block;margin-top:16px;padding:6px 12px;
+  background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.2);
+  border-radius:6px;font-size:10px;color:var(--green);
+  font-family:'JetBrains Mono',monospace;letter-spacing:0.06em;width:100%;text-align:center
+}
+
+/* ===== MAIN CONTENT ===== */
+.main{min-width:0}
+.doc-header{margin-bottom:40px}
+.doc-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;
+  margin-bottom:14px;
+  padding:5px 12px;border-radius:4px;
+  background:rgba(0,200,255,0.07);border:1px solid rgba(0,200,255,0.15);
+}
+.doc-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.doc-title{
+  font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:0.02em;
+  line-height:1.1;margin-bottom:16px;color:#fff;
+}
+.doc-meta{
+  display:flex;flex-wrap:wrap;gap:12px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-soft)
+}
+.meta-pill{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 12px;border-radius:4px;
+  background:var(--bg3);border:1px solid var(--border);
+}
+.meta-dot{width:5px;height:5px;border-radius:50%}
+
+.compliance-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:10px;margin-bottom:40px;
+  padding:20px;
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+}
+.comp-item{
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:600;color:var(--text-soft);
+}
+.comp-check{
+  width:18px;height:18px;border-radius:4px;flex-shrink:0;
+  background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.25);
+  display:flex;align-items:center;justify-content:center;
+}
+.comp-check svg{width:10px;height:10px;color:var(--green)}
+
+/* ===== SECTIONS ===== */
+.section{
+  margin-bottom:44px;
+  scroll-margin-top:80px;
+}
+.section-header{
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;
+  padding-bottom:12px;border-bottom:1px solid var(--border);
+}
+.section-num{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;
+  color:var(--accent);background:rgba(0,200,255,0.08);border:1px solid rgba(0,200,255,0.15);
+  padding:4px 9px;border-radius:4px;flex-shrink:0;letter-spacing:0.06em;
+}
+.section-title{font-size:18px;font-weight:700;color:#fff;letter-spacing:0.01em}
+
+.prose{font-size:14px;color:var(--text-soft);line-height:1.8}
+.prose p{margin-bottom:14px}
+.prose p:last-child{margin-bottom:0}
+.prose strong{color:var(--text);font-weight:600}
+
+/* ===== DATA TABLE ===== */
+.data-table-wrap{
+  overflow-x:auto;margin:16px 0;
+  border:1px solid var(--border);border-radius:var(--radius);
+}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{
+  text-align:left;padding:10px 14px;
+  background:var(--bg3);
+  font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.08em;color:var(--text-soft);
+  font-family:'JetBrains Mono',monospace;
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+.data-table td{
+  padding:11px 14px;border-bottom:1px solid var(--border);
+  color:var(--text-soft);vertical-align:top;line-height:1.5;
+}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(255,255,255,0.015)}
+.td-label{color:var(--text);font-weight:600;font-size:13px;white-space:nowrap}
+.td-tag{
+  display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;
+  letter-spacing:0.04em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;
+}
+.tag-no{background:rgba(0,230,118,0.1);color:var(--green);border:1px solid rgba(0,230,118,0.2)}
+.tag-yes{background:rgba(255,204,0,0.1);color:#ffcc00;border:1px solid rgba(255,204,0,0.2)}
+.tag-na{background:rgba(96,122,146,0.1);color:var(--text-soft);border:1px solid var(--border)}
+.tag-partial{background:rgba(0,200,255,0.1);color:var(--accent);border:1px solid rgba(0,200,255,0.2)}
+
+/* ===== INFO BOXES ===== */
+.info-box{
+  display:flex;gap:14px;padding:16px 18px;border-radius:var(--radius);
+  margin:18px 0;font-size:13px;line-height:1.7;
+}
+.info-box.green{background:rgba(0,230,118,0.06);border:1px solid rgba(0,230,118,0.18);color:var(--text-soft)}
+.info-box.blue{background:rgba(0,200,255,0.06);border:1px solid rgba(0,200,255,0.18);color:var(--text-soft)}
+.info-box.yellow{background:rgba(255,204,0,0.06);border:1px solid rgba(255,204,0,0.18);color:var(--text-soft)}
+.info-box-icon{font-size:18px;flex-shrink:0;line-height:1.4}
+.info-box strong{color:var(--text)}
+
+/* ===== RIGHTS LIST ===== */
+.rights-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.right-card{
+  padding:14px 16px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+.right-card-icon{font-size:20px;margin-bottom:8px}
+.right-card-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px}
+.right-card-desc{font-size:12px;color:var(--text-soft);line-height:1.5}
+
+/* ===== CONTACT BOX ===== */
+.contact-box{
+  padding:24px;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:12px;margin-top:16px;
+}
+.contact-row{
+  display:flex;align-items:center;gap:12px;padding:10px 0;
+  border-bottom:1px solid var(--border);font-size:13px;
+}
+.contact-row:last-child{border-bottom:none;padding-bottom:0}
+.contact-label{color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:11px;min-width:80px;flex-shrink:0}
+.contact-val{color:var(--text-soft)}
+.contact-val a{color:var(--accent)}
+
+/* ===== FOOTER ===== */
+.doc-footer{
+  margin-top:60px;padding-top:24px;border-top:1px solid var(--border);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;
+}
+.footer-note{font-size:11px;color:var(--text-dim);line-height:1.6;font-family:'JetBrains Mono',monospace}
+.footer-back{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:600;color:var(--text-soft);
+  padding:8px 18px;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--bg3);
+  transition:all 0.2s;text-decoration:none;
+}
+.footer-back:hover{color:var(--text);text-decoration:none;border-color:var(--border2)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:860px){
+  .page-wrap{grid-template-columns:1fr;padding:24px 16px 60px}
+  .toc{display:none}
+  .rights-grid{grid-template-columns:1fr}
+  .compliance-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .doc-meta{flex-direction:column;gap:8px}
+  .compliance-grid{grid-template-columns:1fr}
+  .topbar-logo .logo-sub{display:none}
+}
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="12" stroke="#ff2d2d" stroke-width="1.5" opacity="0.5"/>
+      <circle cx="14" cy="14" r="7" stroke="#ff2d2d" stroke-width="1.5" opacity="0.75"/>
+      <circle cx="14" cy="14" r="2.5" fill="#ff2d2d"/>
+      <line x1="14" y1="2" x2="14" y2="6" stroke="#ff2d2d" stroke-width="1.5"/>
+      <line x1="14" y1="22" x2="14" y2="26" stroke="#ff2d2d" stroke-width="1.5"/>
+      <line x1="2" y1="14" x2="6" y2="14" stroke="#ff2d2d" stroke-width="1.5"/>
+      <line x1="22" y1="14" x2="26" y2="14" stroke="#ff2d2d" stroke-width="1.5"/>
+    </svg>
+    <div>
+      <div class="logo-text">Conflict Monitor</div>
+      <div class="logo-sub">Global War Map 2025</div>
+    </div>
+  </div>
+  <a href="index.html" class="topbar-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    Back to Map
+  </a>
+</header>
+
+<!-- PAGE -->
+<div class="page-wrap">
+
+  <!-- TABLE OF CONTENTS -->
+  <aside class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#overview">1. Overview</a></li>
+      <li><a href="#data-collected">2. Data We Collect</a></li>
+      <li><a href="#data-not-collected">3. Data We Do NOT Collect</a></li>
+      <li><a href="#data-use">4. How We Use Data</a></li>
+      <li><a href="#data-sharing">5. Data Sharing</a></li>
+      <li><a href="#third-parties">6. Third-Party Services</a></li>
+      <li><a href="#cookies">7. Cookies & Storage</a></li>
+      <li><a href="#security">8. Data Security</a></li>
+      <li><a href="#children">9. Children's Privacy</a></li>
+      <li><a href="#user-rights">10. Your Rights</a></li>
+      <li><a href="#gdpr">11. GDPR (EU Users)</a></li>
+      <li><a href="#ccpa">12. CCPA (California)</a></li>
+      <li><a href="#retention">13. Data Retention</a></li>
+      <li><a href="#changes">14. Policy Changes</a></li>
+      <li><a href="#contact">15. Contact Us</a></li>
+    </ul>
+    <div class="toc-badge">✓ Google Play Compliant</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- HEADER -->
+    <div class="doc-header">
+      <div class="doc-eyebrow">
+        <span class="doc-eyebrow-dot"></span>
+        Legal Document
+      </div>
+      <h1 class="doc-title">Privacy Policy</h1>
+      <div class="doc-meta">
+        <div class="meta-pill">
+          <div class="meta-dot" style="background:var(--green)"></div>
+          Effective: March 12, 2025
+        </div>
+        <div class="meta-pill">
+          <div class="meta-dot" style="background:var(--accent)"></div>
+          Last Updated: March 12, 2025
+        </div>
+        <div class="meta-pill">
+          <div class="meta-dot" style="background:#ffcc00"></div>
+          Version 1.0
+        </div>
+        <div class="meta-pill">
+          <div class="meta-dot" style="background:var(--text-soft)"></div>
+          App: Global Conflict Monitor
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPLIANCE BADGES -->
+    <div class="compliance-grid">
+      <div class="comp-item">
+        <div class="comp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        Google Play Compliant
+      </div>
+      <div class="comp-item">
+        <div class="comp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        GDPR (EU) Compliant
+      </div>
+      <div class="comp-item">
+        <div class="comp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        CCPA (California)
+      </div>
+      <div class="comp-item">
+        <div class="comp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        No Data Selling
+      </div>
+      <div class="comp-item">
+        <div class="comp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        No Registration Required
+      </div>
+      <div class="comp-item">
+        <div class="comp-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+        COPPA (Children) Safe
+      </div>
+    </div>
+
+    <!-- 1. OVERVIEW -->
+    <section class="section" id="overview">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2 class="section-title">Overview & Developer Information</h2>
+      </div>
+      <div class="prose">
+        <p>This Privacy Policy describes how <strong>Global Conflict Monitor</strong> ("the App", "we", "our", or "us") collects, uses, and shares information when you use our application available on Google Play Store and as a web application hosted on GitHub Pages.</p>
+        <p>We are committed to protecting your privacy. This policy is designed to comply with the <strong>Google Play Developer Program Policies</strong>, the <strong>General Data Protection Regulation (GDPR)</strong>, the <strong>California Consumer Privacy Act (CCPA)</strong>, and other applicable data protection regulations worldwide.</p>
+        <p>By using the App, you agree to the collection and use of information in accordance with this policy. If you do not agree with the terms described here, please discontinue use of the App.</p>
+      </div>
+
+      <div class="info-box green">
+        <div class="info-box-icon">✅</div>
+        <div><strong>Quick Summary:</strong> Global Conflict Monitor is a read-only informational reference app. It displays publicly available data about worldwide conflicts. The App does not require account registration, does not collect your personal information, and does not sell any data to third parties.</div>
+      </div>
+
+      <div class="contact-box" style="margin-top:20px">
+        <div class="contact-row">
+          <span class="contact-label">App Name</span>
+          <span class="contact-val">Global Conflict Monitor — Live World Map</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Platform</span>
+          <span class="contact-val">Android (Google Play) · Web (GitHub Pages)</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Developer</span>
+          <span class="contact-val">Global Conflict Monitor Team</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Contact</span>
+          <span class="contact-val"><a href="mailto:privacy@conflictmonitor.app">privacy@conflictmonitor.app</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Website</span>
+          <span class="contact-val"><a href="https://conflictmonitor.app" target="_blank">conflictmonitor.app</a></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. DATA COLLECTED -->
+    <section class="section" id="data-collected">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2 class="section-title">Information We Collect</h2>
+      </div>
+      <div class="prose">
+        <p>Global Conflict Monitor collects minimal data necessary to provide a functional experience. We classify all data collection into two categories: data collected automatically, and data collected through third-party services integrated into the App.</p>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Data Type</th>
+              <th>Collected?</th>
+              <th>Purpose</th>
+              <th>Stored?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">Personal Name / Email</td>
+              <td><span class="td-tag tag-no">NOT Collected</span></td>
+              <td>—</td>
+              <td><span class="td-tag tag-no">Never</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Location / GPS Data</td>
+              <td><span class="td-tag tag-no">NOT Collected</span></td>
+              <td>—</td>
+              <td><span class="td-tag tag-no">Never</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Map Interaction (pan/zoom)</td>
+              <td><span class="td-tag tag-yes">Session Only</span></td>
+              <td>UI state (not transmitted)</td>
+              <td><span class="td-tag tag-no">Not stored</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Selected Filters / Search</td>
+              <td><span class="td-tag tag-yes">Session Only</span></td>
+              <td>UI preferences (local memory)</td>
+              <td><span class="td-tag tag-no">Not stored</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Device / Browser Type</td>
+              <td><span class="td-tag tag-partial">Via 3rd party</span></td>
+              <td>Analytics (anonymous, aggregated)</td>
+              <td><span class="td-tag tag-partial">Anonymized</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">IP Address</td>
+              <td><span class="td-tag tag-partial">Via 3rd party</span></td>
+              <td>CDN / tile server requests</td>
+              <td><span class="td-tag tag-partial">Anonymized</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Payment Information</td>
+              <td><span class="td-tag tag-no">NOT Collected</span></td>
+              <td>App is free, no payments</td>
+              <td><span class="td-tag tag-no">Never</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Account / Login Data</td>
+              <td><span class="td-tag tag-no">NOT Collected</span></td>
+              <td>No accounts required</td>
+              <td><span class="td-tag tag-no">Never</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Camera / Microphone</td>
+              <td><span class="td-tag tag-no">NOT Accessed</span></td>
+              <td>—</td>
+              <td><span class="td-tag tag-no">Never</span></td>
+            </tr>
+            <tr>
+              <td class="td-label">Contacts / Calendar</td>
+              <td><span class="td-tag tag-no">NOT Accessed</span></td>
+              <td>—</td>
+              <td><span class="td-tag tag-no">Never</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-box blue">
+        <div class="info-box-icon">ℹ️</div>
+        <div><strong>Note on Session Data:</strong> Certain UI interactions (map position, active filters) are held temporarily in your device's memory during the active session. This data is never transmitted to our servers, never written to persistent storage, and is immediately discarded when you close the App.</div>
+      </div>
+    </section>
+
+    <!-- 3. DATA NOT COLLECTED -->
+    <section class="section" id="data-not-collected">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2 class="section-title">Data We Explicitly Do NOT Collect</h2>
+      </div>
+      <div class="prose">
+        <p>We want to be fully transparent. The following categories of sensitive or personal data are <strong>never collected, accessed, processed, or transmitted</strong> by Global Conflict Monitor under any circumstances:</p>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>Category</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-label">Precise or approximate GPS/location</td><td><span class="td-tag tag-no">NEVER</span></td><td>No location permissions requested</td></tr>
+            <tr><td class="td-label">Name, email, phone number</td><td><span class="td-tag tag-no">NEVER</span></td><td>No registration or accounts</td></tr>
+            <tr><td class="td-label">Financial / payment data</td><td><span class="td-tag tag-no">NEVER</span></td><td>App is completely free</td></tr>
+            <tr><td class="td-label">Health or biometric data</td><td><span class="td-tag tag-no">NEVER</span></td><td>Not applicable to this App</td></tr>
+            <tr><td class="td-label">Photos, videos, or files</td><td><span class="td-tag tag-no">NEVER</span></td><td>No storage permissions</td></tr>
+            <tr><td class="td-label">SMS, call logs, messages</td><td><span class="td-tag tag-no">NEVER</span></td><td>No communication permissions</td></tr>
+            <tr><td class="td-label">Contacts, calendar events</td><td><span class="td-tag tag-no">NEVER</span></td><td>No contacts permissions</td></tr>
+            <tr><td class="td-label">Microphone or camera</td><td><span class="td-tag tag-no">NEVER</span></td><td>No audio/visual permissions</td></tr>
+            <tr><td class="td-label">Unique device identifiers (IMEI, etc.)</td><td><span class="td-tag tag-no">NEVER</span></td><td>Per Android ID policy (Apr 2025)</td></tr>
+            <tr><td class="td-label">Browsing history outside App</td><td><span class="td-tag tag-no">NEVER</span></td><td>No cross-app tracking</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. DATA USE -->
+    <section class="section" id="data-use">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2 class="section-title">How We Use Information</h2>
+      </div>
+      <div class="prose">
+        <p>The limited, anonymized technical data that may be collected through third-party services (see Section 6) is used solely for the following purposes:</p>
+        <p><strong>App Performance & Stability:</strong> Understanding crash rates and technical errors to improve reliability of the application.</p>
+        <p><strong>Aggregate Usage Analytics:</strong> Understanding which features are most used in an entirely anonymous and aggregated way (e.g., total number of map opens per day — not tied to any individual).</p>
+        <p><strong>Service Delivery:</strong> Map tile requests to OpenStreetMap servers require your IP address to receive map image data. This is a technical necessity of how web maps function.</p>
+        <p><strong>Security:</strong> Protecting the App and its infrastructure from abuse, fraud, or unauthorized access through industry-standard technical measures.</p>
+      </div>
+      <div class="info-box yellow">
+        <div class="info-box-icon">⚠️</div>
+        <div><strong>We do not use your data for:</strong> advertising, profiling, behavioral targeting, machine learning training on personal data, cross-app tracking, or any purpose beyond those listed above.</div>
+      </div>
+    </section>
+
+    <!-- 5. DATA SHARING -->
+    <section class="section" id="data-sharing">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2 class="section-title">Data Sharing & Disclosure</h2>
+      </div>
+      <div class="prose">
+        <p><strong>We do not sell, rent, trade, or otherwise transfer your personal data to third parties for commercial purposes.</strong></p>
+        <p>Any technical data that passes through third-party infrastructure (detailed in Section 6) is governed by those parties' own privacy policies. We may disclose information only in the following limited circumstances:</p>
+        <p><strong>Legal Compliance:</strong> If required by law, court order, or governmental authority, we may disclose information to the extent legally required. We will notify affected users where legally permissible.</p>
+        <p><strong>Safety:</strong> If we believe disclosure is necessary to prevent imminent harm, fraud, or illegal activity, we may share information with appropriate authorities.</p>
+        <p><strong>Business Transfers:</strong> In the event of a merger, acquisition, or sale of assets, user data (if any) would transfer to the acquiring entity, who would be bound by this privacy policy.</p>
+      </div>
+    </section>
+
+    <!-- 6. THIRD PARTIES -->
+    <section class="section" id="third-parties">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2 class="section-title">Third-Party Services & SDKs</h2>
+      </div>
+      <div class="prose">
+        <p>The App integrates a small number of third-party services to provide its core functionality. Each is listed below with full transparency, as required by Google Play Developer Policies.</p>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Purpose</th>
+              <th>Data Accessed</th>
+              <th>Privacy Policy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="td-label">OpenStreetMap</td>
+              <td>Map tile rendering (background map images)</td>
+              <td>IP address (technical), tile requests</td>
+              <td><a href="https://wiki.osmfoundation.org/wiki/Privacy_Policy" target="_blank" rel="noopener">View →</a></td>
+            </tr>
+            <tr>
+              <td class="td-label">Leaflet.js</td>
+              <td>Interactive map JavaScript library</td>
+              <td>None (client-side only library)</td>
+              <td><a href="https://leafletjs.com/" target="_blank" rel="noopener">View →</a></td>
+            </tr>
+            <tr>
+              <td class="td-label">Google Fonts</td>
+              <td>Typography (Syne, JetBrains Mono fonts)</td>
+              <td>IP address, referrer (anonymized per Google)</td>
+              <td><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">View →</a></td>
+            </tr>
+            <tr>
+              <td class="td-label">Unpkg CDN</td>
+              <td>JavaScript library delivery (Leaflet)</td>
+              <td>IP address, browser type (standard CDN logs)</td>
+              <td><a href="https://unpkg.com/" target="_blank" rel="noopener">View →</a></td>
+            </tr>
+            <tr>
+              <td class="td-label">GitHub Pages</td>
+              <td>Web hosting for the HTML application</td>
+              <td>IP address, browser, standard server logs</td>
+              <td><a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">View →</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-box blue">
+        <div class="info-box-icon">🔗</div>
+        <div><strong>Note:</strong> We do not integrate any advertising SDKs, social media SDKs, analytics SDKs (such as Firebase Analytics, Adjust, AppsFlyer), or any other tracking frameworks. The App contains <strong>no advertisements</strong> of any kind.</div>
+      </div>
+    </section>
+
+    <!-- 7. COOKIES -->
+    <section class="section" id="cookies">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2 class="section-title">Cookies & Local Storage</h2>
+      </div>
+      <div class="prose">
+        <p><strong>The App itself does not set any cookies</strong> and does not use browser localStorage or sessionStorage to store personal data. All UI state (map position, active filters) is held only in JavaScript runtime memory and is lost when the App is closed or refreshed.</p>
+        <p>Third-party services (Google Fonts, OpenStreetMap, CDN providers) may set their own technical/functional cookies as part of standard web infrastructure operation. These are strictly necessary for content delivery and do not constitute behavioral tracking.</p>
+        <p>You can manage or delete cookies at any time through your browser or device settings. Disabling cookies will not impair the core functionality of Global Conflict Monitor.</p>
+      </div>
+    </section>
+
+    <!-- 8. SECURITY -->
+    <section class="section" id="security">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2 class="section-title">Data Security</h2>
+      </div>
+      <div class="prose">
+        <p>We implement industry-standard technical and organizational measures to protect the App and its infrastructure from unauthorized access, alteration, disclosure, or destruction. These measures include:</p>
+        <p><strong>HTTPS Encryption:</strong> All communications between the App and any server use TLS/HTTPS encryption, protecting data in transit from interception.</p>
+        <p><strong>No Server-Side Storage:</strong> Because Global Conflict Monitor does not collect personal data, there is no personal data stored on our servers that could be compromised in a data breach.</p>
+        <p><strong>Static Application:</strong> The App is served as a static HTML/CSS/JavaScript file with no backend database, server-side processing, or authentication endpoints — significantly reducing the attack surface.</p>
+        <p><strong>Dependency Security:</strong> Third-party libraries are loaded from reputable CDNs (unpkg) and kept updated. We use Subresource Integrity (SRI) practices where possible.</p>
+        <p>While we strive for the highest security standards, no method of transmission over the internet or electronic storage is 100% secure. We cannot guarantee absolute security but commit to immediate disclosure of any breach affecting users.</p>
+      </div>
+    </section>
+
+    <!-- 9. CHILDREN -->
+    <section class="section" id="children">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2 class="section-title">Children's Privacy (COPPA)</h2>
+      </div>
+      <div class="info-box yellow">
+        <div class="info-box-icon">⚠️</div>
+        <div><strong>Content Advisory:</strong> Global Conflict Monitor displays factual information about armed conflicts, wars, and geopolitical crises. This content is intended for mature audiences (18+) and educational/research purposes. The subject matter includes references to casualties and human suffering, which may not be appropriate for children.</div>
+      </div>
+      <div class="prose">
+        <p>Global Conflict Monitor is <strong>not directed at children under the age of 13</strong> (or under 16 in the European Union, or under 18 where applicable by local law). We do not knowingly collect personal information from children.</p>
+        <p>The App does not include features designed to appeal to children and does not collect any information that would be classified as children's data under the <strong>Children's Online Privacy Protection Act (COPPA)</strong>, the <strong>UK Children's Code</strong>, or similar regulations.</p>
+        <p>If you are a parent or guardian and believe your child has used this App and provided personal information, please contact us immediately at <a href="mailto:privacy@conflictmonitor.app">privacy@conflictmonitor.app</a> so we can take appropriate action. Since we do not collect personal data, there is no child data for us to delete — but we will investigate any concerns promptly.</p>
+        <p>This App is rated for <strong>mature audiences (17+ / 18+)</strong> on the Google Play Store due to the nature of the content (armed conflict, war data).</p>
+      </div>
+    </section>
+
+    <!-- 10. USER RIGHTS -->
+    <section class="section" id="user-rights">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2 class="section-title">Your Privacy Rights</h2>
+      </div>
+      <div class="prose">
+        <p>Depending on your location, you have the following rights regarding your personal data. Because Global Conflict Monitor collects virtually no personal data, most of these rights will result in confirmation that we hold no data about you — which is the best possible outcome for your privacy.</p>
+      </div>
+
+      <div class="rights-grid">
+        <div class="right-card">
+          <div class="right-card-icon">👁️</div>
+          <div class="right-card-title">Right to Access</div>
+          <div class="right-card-desc">You can request a full copy of any personal data we hold about you. We expect to confirm we hold none.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-card-icon">🗑️</div>
+          <div class="right-card-title">Right to Erasure</div>
+          <div class="right-card-desc">You can request deletion of any personal data we hold. Uninstalling the App removes all local data.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-card-icon">✏️</div>
+          <div class="right-card-title">Right to Rectification</div>
+          <div class="right-card-desc">You can request correction of any inaccurate personal data. We hold no profile data to correct.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-card-icon">🚫</div>
+          <div class="right-card-title">Right to Object</div>
+          <div class="right-card-desc">You can object to processing of your data. We do not profile or target you in any way.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-card-icon">📦</div>
+          <div class="right-card-title">Right to Portability</div>
+          <div class="right-card-desc">You can request your data in a portable format. We hold no personal data to export.</div>
+        </div>
+        <div class="right-card">
+          <div class="right-card-icon">⏸️</div>
+          <div class="right-card-title">Right to Restrict</div>
+          <div class="right-card-desc">You can request restriction of data processing. Uninstalling or closing the App achieves this fully.</div>
+        </div>
+      </div>
+
+      <div class="prose" style="margin-top:16px">
+        <p>To exercise any of these rights, contact us at <a href="mailto:privacy@conflictmonitor.app">privacy@conflictmonitor.app</a>. We will respond within <strong>30 days</strong> (or within the legally required timeframe for your jurisdiction). We will not discriminate against you for exercising your privacy rights.</p>
+      </div>
+    </section>
+
+    <!-- 11. GDPR -->
+    <section class="section" id="gdpr">
+      <div class="section-header">
+        <span class="section-num">11</span>
+        <h2 class="section-title">GDPR — European Union Users</h2>
+      </div>
+      <div class="prose">
+        <p>If you are located in the European Economic Area (EEA), United Kingdom, or Switzerland, the General Data Protection Regulation (GDPR) or equivalent laws apply to you.</p>
+        <p><strong>Legal Basis for Processing:</strong> Where any incidental technical data is processed (e.g., IP address for map tile delivery), the legal basis is <strong>legitimate interests</strong> (Article 6(1)(f) GDPR) — specifically, the technical necessity of delivering map content over the internet. This processing is minimal, necessary, and proportionate.</p>
+        <p><strong>Data Controller:</strong> Global Conflict Monitor Team acts as the Data Controller for any personal data processed in connection with the App.</p>
+        <p><strong>International Data Transfers:</strong> Map tile requests may be processed by OpenStreetMap servers located in various countries. Google Fonts is operated by Google LLC (US). These transfers are covered by Standard Contractual Clauses (SCCs) and the EU-US Data Privacy Framework where applicable.</p>
+        <p><strong>Right to Lodge a Complaint:</strong> If you believe your data has been mishandled, you have the right to lodge a complaint with your local data protection supervisory authority (e.g., ICO in the UK, CNIL in France, BfDI in Germany).</p>
+        <p><strong>Data Protection Officer (DPO):</strong> For GDPR inquiries, contact us at <a href="mailto:dpo@conflictmonitor.app">dpo@conflictmonitor.app</a>.</p>
+      </div>
+    </section>
+
+    <!-- 12. CCPA -->
+    <section class="section" id="ccpa">
+      <div class="section-header">
+        <span class="section-num">12</span>
+        <h2 class="section-title">CCPA — California Residents</h2>
+      </div>
+      <div class="prose">
+        <p>If you are a California resident, the California Consumer Privacy Act (CCPA) as amended by the California Privacy Rights Act (CPRA) provides you with specific rights.</p>
+        <p><strong>We do not sell or share your personal information</strong> as defined under the CCPA. We do not engage in cross-context behavioral advertising. You therefore have an automatic "opt-out" status — there is nothing to opt out of.</p>
+        <p><strong>Categories of Personal Information Collected:</strong> In the past 12 months, we have not collected any personal information as defined under CCPA categories. IP addresses processed by third-party CDNs may fall under "Internet or other electronic network activity" (Category F) but are processed by those third parties under their own CCPA obligations.</p>
+        <p><strong>Your California Rights:</strong> You have the right to know what personal information is collected, sold, or disclosed. You have the right to delete personal information. You have the right to non-discrimination for exercising your rights. To exercise these rights, contact <a href="mailto:privacy@conflictmonitor.app">privacy@conflictmonitor.app</a> with the subject line "CCPA Request".</p>
+      </div>
+    </section>
+
+    <!-- 13. RETENTION -->
+    <section class="section" id="retention">
+      <div class="section-header">
+        <span class="section-num">13</span>
+        <h2 class="section-title">Data Retention</h2>
+      </div>
+      <div class="prose">
+        <p><strong>No personal data is retained by us</strong> beyond the active session. All UI state held in browser/app memory is discarded when the App is closed.</p>
+        <p>Third-party services (OpenStreetMap, Google Fonts, CDN providers) retain standard server logs according to their own retention policies, which are typically 30–90 days for anonymized technical logs.</p>
+        <p><strong>Deleting the App:</strong> Uninstalling the App from your device removes all locally stored App data. There is no account or cloud data to delete.</p>
+        <p>If we ever begin collecting data in the future (which would require an update to this policy and appropriate in-app disclosure), we will establish retention periods based on legal requirements and the minimum time necessary for the stated purpose.</p>
+      </div>
+    </section>
+
+    <!-- 14. CHANGES -->
+    <section class="section" id="changes">
+      <div class="section-header">
+        <span class="section-num">14</span>
+        <h2 class="section-title">Changes to This Policy</h2>
+      </div>
+      <div class="prose">
+        <p>We may update this Privacy Policy from time to time to reflect changes in our practices, technology, legal requirements, or other factors. When we make changes, we will:</p>
+        <p><strong>1.</strong> Update the "Last Updated" date at the top of this page.</p>
+        <p><strong>2.</strong> Increment the version number.</p>
+        <p><strong>3.</strong> For material changes that affect your rights or the types of data collected, we will post a prominent in-app notification and/or update the App Store listing description.</p>
+        <p><strong>4.</strong> Where required by law (e.g., GDPR for material changes), we will seek renewed consent.</p>
+        <p>Your continued use of the App after the effective date of any policy update constitutes your acceptance of the revised policy. We encourage you to review this page periodically.</p>
+        <p>Previous versions of this policy are available upon request by emailing <a href="mailto:privacy@conflictmonitor.app">privacy@conflictmonitor.app</a>.</p>
+      </div>
+    </section>
+
+    <!-- 15. CONTACT -->
+    <section class="section" id="contact">
+      <div class="section-header">
+        <span class="section-num">15</span>
+        <h2 class="section-title">Contact Us & Privacy Inquiries</h2>
+      </div>
+      <div class="prose">
+        <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us through any of the following channels. We are committed to responding within <strong>30 days</strong>.</p>
+      </div>
+
+      <div class="contact-box">
+        <div class="contact-row">
+          <span class="contact-label">General</span>
+          <span class="contact-val"><a href="mailto:privacy@conflictmonitor.app">privacy@conflictmonitor.app</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">GDPR / DPO</span>
+          <span class="contact-val"><a href="mailto:dpo@conflictmonitor.app">dpo@conflictmonitor.app</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">CCPA</span>
+          <span class="contact-val"><a href="mailto:privacy@conflictmonitor.app">privacy@conflictmonitor.app</a> — Subject: "CCPA Request"</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Children</span>
+          <span class="contact-val"><a href="mailto:privacy@conflictmonitor.app">privacy@conflictmonitor.app</a> — Subject: "Child Privacy"</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Response</span>
+          <span class="contact-val">Within 30 days (GDPR: 30 days; CCPA: 45 days)</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-label">Language</span>
+          <span class="contact-val">English (other languages accommodated where possible)</span>
+        </div>
+      </div>
+
+      <div class="info-box green" style="margin-top:20px">
+        <div class="info-box-icon">🔒</div>
+        <div><strong>Our Privacy Commitment:</strong> Global Conflict Monitor is built on the principle of data minimalism. We collect only what is technically necessary, we never sell your data, and we believe your right to information should never come at the cost of your privacy.</div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="doc-footer">
+      <div class="footer-note">
+        Global Conflict Monitor Privacy Policy · Version 1.0<br>
+        Effective &amp; Last Updated: March 12, 2025<br>
+        Compliant with: Google Play Policies · GDPR · CCPA · COPPA
+      </div>
+      <a href="index.html" class="footer-back">
+        ← Back to Map
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<!-- TOC ACTIVE LINK SCRIPT -->
+<script>
+(function(){
+  const sections = document.querySelectorAll('.section');
+  const links = document.querySelectorAll('.toc-list a');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const active = document.querySelector('.toc-list a[href="#'+e.target.id+'"]');
+        if(active) active.classList.add('active');
+      }
+    });
+  },{rootMargin:'-20% 0px -70% 0px'});
+  sections.forEach(s=>obs.observe(s));
+})();
+</script>
+
+</body>
+</html>
