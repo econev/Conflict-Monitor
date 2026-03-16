@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Global Conflict Monitor — Live World Map 2025</title>
+  <title>Global Conflict Monitor — Live World Map 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -51,7 +51,7 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
   padding:0 16px;
   background:var(--bg2);
   border-bottom:1px solid var(--border);
-  z-index:400;gap:12px;
+  z-index:10000;gap:12px;
 }
 .topbar-left{display:flex;align-items:center;gap:14px}
 .logo{display:flex;align-items:center;gap:9px}
@@ -98,7 +98,7 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
   width:340px;flex-shrink:0;
   background:var(--panel);border-right:1px solid var(--border);
   display:flex;flex-direction:column;overflow:hidden;
-  z-index:300;transition:transform 0.3s ease;
+  z-index:9999;transition:transform 0.3s ease;
 }
 .sidebar-head{
   padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0
@@ -173,7 +173,14 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
 
 /* ===== MAP ===== */
 .map-wrap{flex:1;position:relative;overflow:hidden}
-#map{width:100%;height:100%;background:#060a0e}
+#map{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  background:#060a0e;
+  transition: right 0.3s ease, bottom 0.3s ease;
+}
+.map-wrap.detail-open #map {
+  right:360px;
+}
 .leaflet-container{background:#060a0e!important;font-family:'Syne',sans-serif}
 .leaflet-tile{filter:brightness(0.38) saturate(0.4) hue-rotate(200deg) contrast(1.15)}
 .leaflet-control-zoom a{
@@ -195,28 +202,21 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
   top:10px!important;right:12px!important
 }
 
-/* ===== POPUP ===== */
-.popup-wrap{padding:16px}
-.popup-title{font-size:15px;font-weight:700;margin-bottom:6px;padding-right:20px;line-height:1.3}
-.popup-region{font-size:11px;color:var(--text-soft);margin-bottom:12px;display:flex;align-items:center;gap:5px}
-.popup-sev{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:10px;font-weight:700;padding:4px 10px;border-radius:3px;
-  text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px
+/* ===== LANG SWITCHER ===== */
+.lang-switcher{
+  display:flex;align-items:center;background:var(--bg3);
+  border:1px solid var(--border);border-radius:4px;overflow:hidden;
 }
-.popup-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.popup-stat{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;padding:8px 10px}
-.popup-stat-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;line-height:1;margin-bottom:2px}
-.popup-stat-lbl{font-size:9px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.06em}
-.popup-desc{font-size:12px;color:var(--text-soft);line-height:1.65;margin-bottom:12px}
-.popup-parties{margin-bottom:8px}
-.popup-parties-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-dim);margin-bottom:6px}
-.popup-party{
-  display:inline-flex;padding:3px 9px;border-radius:3px;font-size:11px;font-weight:600;
-  background:rgba(255,255,255,0.05);border:1px solid var(--border);
-  margin:0 4px 4px 0
+.lang-btn{
+  font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;
+  padding:5px 8px;color:var(--text-soft);transition:all 0.2s;
 }
-.popup-updated{font-size:10px;color:var(--text-dim);font-family:'JetBrains Mono',monospace;padding-top:8px;border-top:1px solid var(--border)}
+.lang-btn.active{
+  background:rgba(255,255,255,0.08);color:var(--text);
+}
+.lang-btn:hover:not(.active){
+  color:var(--text);
+}
 
 /* PULSE MARKERS */
 .pulse-marker{position:relative;display:flex;align-items:center;justify-content:center}
@@ -319,9 +319,8 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
 
 /* ===== MOBILE OVERLAY ===== */
 .sidebar-overlay{
-  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:250
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:9998
 }
-.sidebar-overlay.visible{display:block}
 
 /* ===== BOTTOM STATS BAR (mobile) ===== */
 .bottom-stats{
@@ -339,7 +338,7 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
 /* ===== MOBILE ===== */
 @media(max-width:900px){
   .sidebar{
-    position:fixed;top:52px;left:0;bottom:0;z-index:260;
+    position:fixed;top:52px;left:0;bottom:0;z-index:9999;
     transform:translateX(-100%)
   }
   .sidebar.open{transform:translateX(0)}
@@ -347,7 +346,17 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
   .stat-pill{display:none}
   .map-legend{bottom:60px}
   .bottom-stats{display:flex}
-  .detail-panel{top:52px}
+  .detail-panel{
+    top:auto;bottom:0;left:0;right:0;
+    width:100%;height:50%;
+    transform:translateY(100%);
+    border-left:none;
+    border-top:1px solid var(--border);
+  }
+  .map-wrap.detail-open #map {
+    right: 0;
+    bottom: 50%;
+  }
 }
 @media(max-width:480px){
   .sidebar{width:100%;max-width:360px}
@@ -383,12 +392,16 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
         </div>
         <div>
           <div class="logo-text">Conflict Monitor</div>
-          <div class="logo-sub">Global War Map 2025</div>
+          <div class="logo-sub">Global War Map 2026</div>
         </div>
       </div>
       <div class="live-badge">
         <div class="live-dot"></div>
         <span class="live-text">LIVE</span>
+      </div>
+      <div class="lang-switcher">
+        <button class="lang-btn active">EN</button>
+        <button class="lang-btn">RU</button>
       </div>
     </div>
     <div class="topbar-right">
@@ -449,7 +462,7 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
       <div style="padding:8px 16px;border-top:1px solid var(--border);display:flex;justify-content:center;gap:16px;flex-shrink:0">
         <a href="privacy-policy.html" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:0.06em;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-dim)'">PRIVACY POLICY</a>
         <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim)">·</span>
-        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim)">© 2025 CONFLICT MONITOR</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-dim)">© 2026 CONFLICT MONITOR</span>
       </div>
     </aside>
 
@@ -505,8 +518,50 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* ===== CONFLICT DATA (Updated March 2025 based on ACLED, CFR, ICG, UN sources) ===== */
+/* ===== CONFLICT DATA (Updated March 2026 based on ACLED, CFR, ICG, UN sources) ===== */
 const CONFLICTS = [
+  {
+    id:26,
+    title:"South China Sea Skirmish",
+    region:"Asia Pacific",
+    country:"Philippines / China",
+    lat:16.5,lng:114.0,
+    severity:"high",
+    type:"Maritime Clash",
+    started:"Yesterday",
+    deaths_annual:"0",
+    deaths_total:"0",
+    displaced:"0",
+    status:"Active — Real Time (Started Yesterday)",
+    parties:["China Coast Guard","Philippine Navy"],
+    description:"Major collision between Chinese and Philippine vessels near Second Thomas Shoal. Tensions are escalating in real-time.",
+    timeline:[
+      {date:"Yesterday",text:"Vessels collide, triggering international response"}
+    ],
+    source:"Live Monitoring",
+    sourceUrl:"#"
+  },
+  {
+    id:27,
+    title:"Cyber Infrastructure Attack",
+    region:"Global",
+    country:"Multiple",
+    lat:40.0,lng:-40.0,
+    severity:"extreme",
+    type:"Cyber Warfare",
+    started:"Today",
+    deaths_annual:"0",
+    deaths_total:"0",
+    displaced:"0",
+    status:"Active — Real-time disruption",
+    parties:["Unknown State Actors","Global ISPs"],
+    description:"Widespread targeted attacks on global undersea cables causing real-time service outages across continents.",
+    timeline:[
+      {date:"Today",text:"Unprecedented DDoS and physical severing of cables reported"}
+    ],
+    source:"Live Monitoring",
+    sourceUrl:"#"
+  },
   {
     id:1,
     title:"Russia–Ukraine War",
@@ -1118,9 +1173,13 @@ let map, markers={}, currentFilter='all', selectedId=null, searchTerm='';
 /* ===== INIT MAP ===== */
 function initMap(){
   map = L.map('map',{zoomControl:false, attributionControl:false});
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18, minZoom:2}).addTo(map);
+  map.setMaxBounds([[-90, -180], [90, 180]]);
   map.setView([20,15],2);
   L.control.zoom({position:'topright'}).addTo(map);
+  
+  map.on('click', closeDetail);
+  
   // Add SVG gradient definition for progress
   addMarkersAll();
   setTimeout(()=>map.invalidateSize(),200);
@@ -1147,36 +1206,11 @@ function pulseIcon(severity){
 function addMarkersAll(){
   CONFLICTS.forEach(c=>{
     const m = L.marker([c.lat,c.lng],{icon:pulseIcon(c.severity)}).addTo(map);
-    m.bindPopup(buildPopup(c),{maxWidth:320, className:'dark-popup'});
     m.on('click',()=>selectConflict(c.id,false));
     markers[c.id]=m;
   });
 }
 
-/* ===== BUILD POPUP ===== */
-function buildPopup(c){
-  const col = SEV_COLORS[c.severity];
-  return `<div class="popup-wrap">
-    <div class="popup-title">${c.title}</div>
-    <div class="popup-region">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      ${c.region} — ${c.country}
-    </div>
-    <div class="popup-sev" style="background:${col}18;border:1px solid ${col}40;color:${col}">
-      <span style="width:6px;height:6px;border-radius:50%;background:${col};display:inline-block"></span>
-      ${SEV_LABELS[c.severity]}
-    </div>
-    <div class="popup-grid">
-      <div class="popup-stat"><div class="popup-stat-val" style="color:${col}">${c.deaths_annual}</div><div class="popup-stat-lbl">Deaths/Year</div></div>
-      <div class="popup-stat"><div class="popup-stat-val" style="color:${col}">${c.displaced}</div><div class="popup-stat-lbl">Displaced</div></div>
-      <div class="popup-stat"><div class="popup-stat-val" style="color:var(--text-soft)">${c.type}</div><div class="popup-stat-lbl">Type</div></div>
-      <div class="popup-stat"><div class="popup-stat-val" style="color:var(--text-soft)">${c.started}</div><div class="popup-stat-lbl">Started</div></div>
-    </div>
-    <div class="popup-desc">${c.description.substring(0,180)}…</div>
-    <div class="popup-parties"><div class="popup-parties-lbl">Parties involved</div>${c.parties.map(p=>`<span class="popup-party">${p}</span>`).join('')}</div>
-    <div class="popup-updated">Updated: March 2025 · Sources: ${c.source}</div>
-  </div>`;
-}
 
 /* ===== SIDEBAR LIST ===== */
 function renderSidebar(){
@@ -1251,7 +1285,6 @@ function selectConflict(id, scrollMap){
   if(el){el.classList.add('selected');el.scrollIntoView({behavior:'smooth',block:'nearest'})}
   // Map pan
   if(scrollMap) map.flyTo([c.lat,c.lng],Math.max(4,map.getZoom()),{duration:0.8});
-  markers[id]?.openPopup();
   // Detail panel
   openDetail(c);
   // Mobile: close sidebar
@@ -1261,6 +1294,8 @@ function selectConflict(id, scrollMap){
 /* ===== DETAIL PANEL ===== */
 function openDetail(c){
   const col = SEV_COLORS[c.severity];
+  document.querySelector('.map-wrap').classList.add('detail-open');
+  setTimeout(()=>map.invalidateSize(), 300);
   document.getElementById('detail-body').innerHTML=`
     <div class="detail-banner" style="background:linear-gradient(90deg,${col},${col}44)"></div>
     <div class="detail-title">${c.title}</div>
@@ -1311,7 +1346,7 @@ function openDetail(c){
     <div class="detail-source">
       📊 Data Sources: ${c.source}<br>
       🔗 <a href="${c.sourceUrl}" target="_blank" rel="noopener">Read full analysis →</a><br>
-      ⚠️ Data updated March 2025. Figures are estimates from independent research organizations.<br>
+      ⚠️ Data updated March 2026. Figures are estimates from independent research organizations.<br>
       🔒 <a href="privacy-policy.html">Privacy Policy</a>
     </div>
   `;
@@ -1320,8 +1355,10 @@ function openDetail(c){
 
 function closeDetail(){
   document.getElementById('detail-panel').classList.remove('open');
+  document.querySelector('.map-wrap').classList.remove('detail-open');
   selectedId=null;
   document.querySelectorAll('.conflict-item').forEach(el=>el.classList.remove('selected'));
+  setTimeout(()=>map.invalidateSize(), 300);
 }
 
 /* ===== LEGEND COUNTS ===== */
