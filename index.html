@@ -361,22 +361,36 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
 @media(max-width:480px){
   .sidebar{width:100%;max-width:360px}
   .detail-panel{width:100%}
-  .clock-wrap .utc{display:none}
   .logo-sub{display:none}
+  .logo-text{display:none}
+  .topbar{padding:0 8px}
+  .topbar-left{gap:10px}
+  .live-badge{padding:4px 6px; gap:4px}
+  .live-text{font-size:9px}
+  .lang-btn{padding:5px 6px}
 }
 
-/* Hide Google Translate top bar and hover tooltips */
+/* Ruthlessly hide Google Translate top bar and hover tooltips */
+.goog-te-banner-frame,
 .goog-te-banner-frame.skiptranslate,
 #goog-gt-tt, 
-.goog-te-balloon-frame {
+.goog-te-balloon-frame,
+div#goog-gt-,
+div.skiptranslate,
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 .goog-text-highlight {
   background: none !important;
   box-shadow: none !important;
 }
-body {
+body, html {
   top: 0px !important;
+  margin-top: 0px !important;
+  position: static !important;
 }
   </style>
 </head>
