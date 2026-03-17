@@ -344,7 +344,7 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
   .sidebar.open{transform:translateX(0)}
   .hamburger{display:flex}
   .stat-pill{display:none}
-  .map-legend{bottom:60px}
+  .map-legend{display:none}
   .bottom-stats{display:flex}
   .detail-panel{
     top:auto;bottom:0;left:0;right:0;
@@ -363,7 +363,20 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
   .detail-panel{width:100%}
   .clock-wrap .utc{display:none}
   .logo-sub{display:none}
-  .map-legend{bottom:54px;right:8px;padding:8px 12px}
+}
+
+/* Hide Google Translate top bar and hover tooltips */
+.goog-te-banner-frame.skiptranslate,
+#goog-gt-tt, 
+.goog-te-balloon-frame {
+  display: none !important;
+}
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}
+body {
+  top: 0px !important;
 }
   </style>
 </head>
@@ -400,8 +413,8 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
         <span class="live-text">LIVE</span>
       </div>
       <div class="lang-switcher">
-        <button class="lang-btn active">EN</button>
-        <button class="lang-btn">RU</button>
+        <button class="lang-btn active" onclick="changeLanguage('en', this)">EN</button>
+        <button class="lang-btn" onclick="changeLanguage('ru', this)">RU</button>
       </div>
     </div>
     <div class="topbar-right">
@@ -416,10 +429,6 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
           <div class="stat-pill-val" id="hdr-deaths" style="color:var(--orange)">—</div>
           <div class="stat-pill-lbl">Est. Deaths/Year</div>
         </div>
-      </div>
-      <div class="clock-wrap">
-        <div class="clock-time" id="clock-time">00:00:00</div>
-        <div class="utc" style="font-size:9px;color:var(--text-dim);letter-spacing:0.06em">UTC</div>
       </div>
     </div>
   </header>
@@ -516,6 +525,8 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
 
 </div>
 
+<div id="google_translate_element" style="display:none;"></div>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 /* ===== CONFLICT DATA (Updated March 2026 based on ACLED, CFR, ICG, UN sources) ===== */
@@ -1389,13 +1400,25 @@ function renderBottomStats(){
   `).join('') + `<div class="bs-item"><div class="bs-val" style="color:var(--text)">${CONFLICTS.length}</div><div class="bs-lbl">total</div></div>`;
 }
 
-/* ===== CLOCK ===== */
-function startClock(){
-  function tick(){
-    const now=new Date();
-    document.getElementById('clock-time').textContent=now.toUTCString().slice(17,25);
+/* ===== GOOGLE TRANSLATE ===== */
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,ru',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+
+function changeLanguage(lang, btn) {
+  const selectField = document.querySelector("select.goog-te-combo");
+  if (selectField) {
+    selectField.value = lang;
+    selectField.dispatchEvent(new Event("change"));
   }
-  tick(); setInterval(tick,1000);
+  
+  // Highlight active button
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
 
 /* ===== MOBILE SIDEBAR ===== */
@@ -1417,7 +1440,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderSidebar();
   updateHeaderStats();
   renderBottomStats();
-  startClock();
   document.getElementById('hamburger').addEventListener('click',toggleSidebar);
   window.addEventListener('resize',()=>map&&map.invalidateSize());
 });
