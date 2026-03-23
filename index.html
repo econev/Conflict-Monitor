@@ -344,7 +344,7 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
   .sidebar.open{transform:translateX(0)}
   .hamburger{display:flex}
   .stat-pill{display:none}
-  .map-legend{display:none}
+  .map-legend{bottom:60px}
   .bottom-stats{display:flex}
   .detail-panel{
     top:auto;bottom:0;left:0;right:0;
@@ -361,36 +361,9 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
 @media(max-width:480px){
   .sidebar{width:100%;max-width:360px}
   .detail-panel{width:100%}
+  .clock-wrap .utc{display:none}
   .logo-sub{display:none}
-  .logo-text{display:none}
-  .topbar{padding:0 8px}
-  .topbar-left{gap:10px}
-  .live-badge{padding:4px 6px; gap:4px}
-  .live-text{font-size:9px}
-  .lang-btn{padding:5px 6px}
-}
-
-/* Ruthlessly hide Google Translate top bar and hover tooltips */
-.goog-te-banner-frame,
-.goog-te-banner-frame.skiptranslate,
-#goog-gt-tt, 
-.goog-te-balloon-frame,
-div#goog-gt-,
-div.skiptranslate,
-.VIpgJd-ZVi9od-ORHb-OEVmcd {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-.goog-text-highlight {
-  background: none !important;
-  box-shadow: none !important;
-}
-body, html {
-  top: 0px !important;
-  margin-top: 0px !important;
-  position: static !important;
+  .map-legend{bottom:54px;right:8px;padding:8px 12px}
 }
   </style>
 </head>
@@ -427,8 +400,8 @@ body, html {
         <span class="live-text">LIVE</span>
       </div>
       <div class="lang-switcher">
-        <button class="lang-btn active" onclick="changeLanguage('en', this)">EN</button>
-        <button class="lang-btn" onclick="changeLanguage('ru', this)">RU</button>
+        <button class="lang-btn active">EN</button>
+        <button class="lang-btn">RU</button>
       </div>
     </div>
     <div class="topbar-right">
@@ -443,6 +416,10 @@ body, html {
           <div class="stat-pill-val" id="hdr-deaths" style="color:var(--orange)">—</div>
           <div class="stat-pill-lbl">Est. Deaths/Year</div>
         </div>
+      </div>
+      <div class="clock-wrap">
+        <div class="clock-time" id="clock-time">00:00:00</div>
+        <div class="utc" style="font-size:9px;color:var(--text-dim);letter-spacing:0.06em">UTC</div>
       </div>
     </div>
   </header>
@@ -539,654 +516,310 @@ body, html {
 
 </div>
 
-<div id="google_translate_element" style="display:none;"></div>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* ===== CONFLICT DATA (Updated March 2026 based on ACLED, CFR, ICG, UN sources) ===== */
-const CONFLICTS = [
-  {
-    id:26,
-    title:"South China Sea Skirmish",
-    region:"Asia Pacific",
-    country:"Philippines / China",
-    lat:16.5,lng:114.0,
-    severity:"high",
-    type:"Maritime Clash",
-    started:"Yesterday",
-    deaths_annual:"0",
-    deaths_total:"0",
-    displaced:"0",
-    status:"Active — Real Time (Started Yesterday)",
-    parties:["China Coast Guard","Philippine Navy"],
-    description:"Major collision between Chinese and Philippine vessels near Second Thomas Shoal. Tensions are escalating in real-time.",
-    timeline:[
-      {date:"Yesterday",text:"Vessels collide, triggering international response"}
-    ],
-    source:"Live Monitoring",
-    sourceUrl:"#"
-  },
-  {
-    id:27,
-    title:"Cyber Infrastructure Attack",
-    region:"Global",
-    country:"Multiple",
-    lat:40.0,lng:-40.0,
-    severity:"extreme",
-    type:"Cyber Warfare",
-    started:"Today",
-    deaths_annual:"0",
-    deaths_total:"0",
-    displaced:"0",
-    status:"Active — Real-time disruption",
-    parties:["Unknown State Actors","Global ISPs"],
-    description:"Widespread targeted attacks on global undersea cables causing real-time service outages across continents.",
-    timeline:[
-      {date:"Today",text:"Unprecedented DDoS and physical severing of cables reported"}
-    ],
-    source:"Live Monitoring",
-    sourceUrl:"#"
-  },
+/* ===== CONFLICT DATA POOLS ===== */
+const STATIC_CONFLICTS = [
   {
     id:1,
     title:"Russia–Ukraine War",
-    region:"Eastern Europe",
-    country:"Ukraine",
+    region:"Eastern Europe",country:"Ukraine",
     lat:49.0,lng:32.0,
-    severity:"extreme",
-    type:"Interstate War",
-    started:"Feb 2022",
-    deaths_annual:"200,000–285,000",
-    deaths_total:"500,000+",
-    displaced:"6.7 million",
-    status:"Active — High Intensity",
-    parties:["Russia (aggressor)","Ukraine","NATO support"],
-    description:"Russia's full-scale invasion of Ukraine, the largest land war in Europe since WWII. Continuous frontline fighting across eastern and southern Ukraine with massive casualties on both sides. Extensive drone/missile warfare, urban battles in Kherson, Zaporizhzhia, Donetsk oblasts. US-brokered ceasefire efforts ongoing in 2025.",
-    timeline:[
-      {date:"Feb 24 2022",text:"Russia launches full-scale invasion across multiple fronts"},
-      {date:"Sep 2022",text:"Ukraine launches major counter-offensive, reclaims Kherson"},
-      {date:"2023–2024",text:"Grinding attrition warfare along 1,000+ km frontline"},
-      {date:"2025",text:"US mediation efforts begin; ceasefire talks intermittent"},
-    ],
-    source:"ACLED, OHCHR, ISW, UN OCHA",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/conflict-ukraine"
+    severity:"extreme",type:"Interstate War",
+    started:"Feb 2022",deaths_annual:"200,000–285,000",deaths_total:"500,000+",displaced:"6.7 million",
+    status:"Active",
+    parties:["Russia","Ukraine","NATO support"],
+    description:"Full-scale invasion of Ukraine, the largest war in Europe since WWII.",
+    timeline:[{date:"Feb 2022",text:"Invasion starts"},{date:"Recent",text:"Frontline stability fragile"}]
   },
   {
     id:2,
-    title:"Sudan Civil War (SAF vs RSF)",
-    region:"Northeast Africa",
-    country:"Sudan",
+    title:"Sudan Civil War",
+    region:"Northeast Africa",country:"Sudan",
     lat:15.5,lng:30.5,
-    severity:"extreme",
-    type:"Civil War",
-    started:"Apr 2023",
-    deaths_annual:"20,000+",
-    deaths_total:"150,000+",
-    displaced:"14.6 million",
-    status:"Active — World's Worst Crisis",
-    parties:["Sudanese Armed Forces (SAF)","Rapid Support Forces (RSF)","Darfur militias"],
-    description:"War between Sudan's national army and the paramilitary RSF. Largest displacement crisis in the world. Genocide confirmed in Darfur by international bodies. Over half the Sudanese population (30M+) needs humanitarian aid. Famine confirmed in multiple regions. Khartoum heavily contested.",
-    timeline:[
-      {date:"Apr 15 2023",text:"SAF and RSF fighting erupts in Khartoum and across Sudan"},
-      {date:"Mid 2023",text:"RSF captures much of Khartoum; mass atrocities in Darfur"},
-      {date:"2024",text:"Famine declared; 522,000 infant deaths from malnutrition"},
-      {date:"2025",text:"Fighting continues; brief ceasefire attempts collapsed"},
-    ],
-    source:"ACLED, UN OCHA, Amnesty International",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/civil-war-sudan"
+    severity:"extreme",type:"Civil War",
+    started:"Apr 2023",deaths_annual:"20,000+",deaths_total:"150,000+",displaced:"14.6 million",
+    status:"Active",
+    parties:["SAF","RSF"],
+    description:"War between army and paramilitary RSF. World's largest displacement crisis.",
+    timeline:[{date:"Apr 2023",text:"Fighting starts"},{date:"Recent",text:"Famine declared"}]
   },
   {
     id:3,
-    title:"Israel–Gaza War (Hamas War)",
-    region:"Middle East",
-    country:"Gaza / Palestine",
+    title:"Israel–Gaza War",
+    region:"Middle East",country:"Gaza / Palestine",
     lat:31.4,lng:34.4,
-    severity:"extreme",
-    type:"Interstate / Asymmetric War",
-    started:"Oct 2023",
-    deaths_annual:"21,000+",
-    deaths_total:"47,000+",
-    displaced:"1.9 million",
-    status:"Active — Ceasefire Phase (fragile)",
-    parties:["Israel (IDF)","Hamas","Palestinian Islamic Jihad","Hezbollah (Lebanon front)"],
-    description:"Following Hamas's October 7 2023 attack killing ~1,200 Israelis, Israel launched a massive military campaign in Gaza. UN describes humanitarian situation as catastrophic. Hospitals, schools, infrastructure destroyed. Starvation used as warfare tool per UN. Ceasefire negotiations intermittent throughout 2024–2025.",
-    timeline:[
-      {date:"Oct 7 2023",text:"Hamas attacks Israel, killing ~1,200; 251 taken hostage"},
-      {date:"Oct 2023",text:"Israel begins mass bombing and ground invasion of Gaza"},
-      {date:"2024",text:"Multi-front escalation: Lebanon, West Bank, Iran strikes"},
-      {date:"Jan–Feb 2025",text:"Phase 1 ceasefire; hostage exchanges; fragile calm"},
-    ],
-    source:"ACLED, UN OCHA, WHO Gaza",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/israeli-palestinian-conflict"
+    severity:"extreme",type:"Asymmetric War",
+    started:"Oct 2023",deaths_annual:"21,000+",deaths_total:"47,000+",displaced:"1.9 million",
+    status:"Active",
+    parties:["Israel","Hamas","Hezbollah"],
+    description:"Massive campaign in Gaza following Oct 7 attacks.",
+    timeline:[{date:"Oct 2023",text:"War begins"},{date:"Recent",text:"Ceasefire talks"}]
   },
   {
     id:4,
     title:"Myanmar Civil War",
-    region:"Southeast Asia",
-    country:"Myanmar",
+    region:"Southeast Asia",country:"Myanmar",
     lat:19.7,lng:96.1,
-    severity:"extreme",
-    type:"Civil War / Military Coup",
-    started:"Feb 2021",
-    deaths_annual:"15,000+",
-    deaths_total:"50,000+",
-    displaced:"3.2 million",
-    status:"Active — Junta Losing Territory",
-    parties:["Myanmar Military (Tatmadaw)","National Unity Govt","Ethnic Resistance Organizations","Brotherhood Alliance"],
-    description:"Following the 2021 military coup, over 1,200 resistance groups formed. The Tatmadaw has lost significant territory to resistance forces. Indiscriminate airstrikes on civilian areas. One of the world's most fragmented conflicts with 1,200+ distinct armed groups. Brotherhood Alliance captured key cities including Lashio in 2024.",
-    timeline:[
-      {date:"Feb 1 2021",text:"Military coup; Aung San Suu Kyi arrested"},
-      {date:"2021–2022",text:"Resistance forms; PDFs attack military nationwide"},
-      {date:"Oct 2023",text:"Brotherhood Alliance launches Operation 1027; seizes towns"},
-      {date:"2024–2025",text:"Military loses Lashio regional command; resistance advances"},
-    ],
-    source:"ACLED, AAPP Burma",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/civil-war-myanmar"
+    severity:"extreme",type:"Civil War",
+    started:"Feb 2021",deaths_annual:"15,000+",deaths_total:"50,000+",displaced:"3.2 million",
+    status:"Active",
+    parties:["Military","Resistance"],
+    description:"Resistance against military junta across all regions.",
+    timeline:[{date:"Feb 2021",text:"Coup"},{date:"Recent",text:"Resistance holds state capitals"}]
   },
   {
     id:5,
-    title:"DRC — M23 / Rwanda Conflict",
-    region:"Central Africa",
-    country:"DR Congo",
+    title:"DRC — M23 / Rwanda",
+    region:"Central Africa",country:"DR Congo",
     lat:-1.5,lng:29.0,
-    severity:"extreme",
-    type:"Civil War / Regional Proxy War",
-    started:"2012 (resumed 2021)",
-    deaths_annual:"7,000+",
-    deaths_total:"6,000,000+ (since 1996)",
-    displaced:"7 million",
-    status:"Active — M23 controls East DRC",
-    parties:["M23 rebels (Rwanda-backed)","DRC Armed Forces (FARDC)","Rwanda Defence Force","Wazalendo militias"],
-    description:"M23 rebels backed by Rwanda seized Goma in January 2025, displacing 500,000+. One of the world's largest and most complex humanitarian crises. Control over vast mineral wealth drives conflict. 21 million people need urgent aid. US-brokered peace agreement signed Dec 2025 but fighting continues.",
-    timeline:[
-      {date:"2021",text:"M23 resumes offensive in North Kivu province"},
-      {date:"Jan 2025",text:"M23/Rwanda forces capture Goma; 500,000+ displaced"},
-      {date:"Feb 2025",text:"M23 advances south to Bukavu; UN condemns Rwanda"},
-      {date:"Dec 2025",text:"US-brokered peace deal signed; violations continue"},
-    ],
-    source:"ACLED, UN OCHA, CFR",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/violence-democratic-republic-congo"
+    severity:"extreme",type:"Civil War",
+    started:"2012 (resumed 2021)",deaths_annual:"7,000+",deaths_total:"6,000,000+",displaced:"7 million",
+    status:"Active",
+    parties:["FARDC","M23 Rebels","Rwanda"],
+    description:"Conflict over minerals and territory in East Congo.",
+    timeline:[{date:"2021",text:"M23 resurgence"},{date:"Recent",text:"New ceasefire broken"}]
   },
   {
     id:6,
     title:"Yemen Civil War",
-    region:"Middle East",
-    country:"Yemen",
+    region:"Middle East",country:"Yemen",
     lat:15.5,lng:47.5,
-    severity:"high",
-    type:"Civil War / Proxy War",
-    started:"2014",
-    deaths_annual:"~3,000",
-    deaths_total:"150,000+",
-    displaced:"4.5 million",
-    status:"Active — Houthi Red Sea attacks",
-    parties:["Houthis (Ansar Allah)","Yemen Govt (Saudi-backed)","Saudi-led Coalition","US/UK forces"],
-    description:"Ongoing civil war with Houthi control of northwest Yemen. Since Oct 2023, Houthis have attacked 100+ commercial vessels in the Red Sea/Bab al-Mandab Strait, cutting Suez Canal traffic by 50–60%. US/UK airstrikes against Houthi positions. Humanitarian crisis remains among world's worst.",
-    timeline:[
-      {date:"2014",text:"Houthi forces seize Sanaa; Saudi coalition intervenes (2015)"},
-      {date:"2022",text:"Fragile UN-brokered truce; sporadic violations"},
-      {date:"Oct 2023",text:"Houthis begin Red Sea attacks in solidarity with Gaza"},
-      {date:"2024–2025",text:"US/UK strikes; Houthis expand targeting to Mediterranean"},
-    ],
-    source:"ACLED, UN OCHA, IISS",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/war-yemen"
-  },
-  {
-    id:7,
-    title:"Nigeria — Boko Haram / ISWAP",
-    region:"West Africa",
-    country:"Nigeria",
-    lat:11.5,lng:13.5,
-    severity:"high",
-    type:"Jihadist Insurgency",
-    started:"2009",
-    deaths_annual:"~5,000",
-    deaths_total:"35,000+",
-    displaced:"2.2 million",
-    status:"Active — Northeast + Northwest",
-    parties:["Nigerian Armed Forces","Boko Haram","ISWAP (Islamic State WA Province)","Civilian JTF"],
-    description:"Boko Haram and ISWAP insurgency in Northeast Nigeria (Borno, Yobe, Adamawa). Separate bandit crisis in Northwest Nigeria (Zamfara, Katsina, Sokoto). US strikes on Lakurawa militants in Sokoto (Dec 2025). Complex overlapping conflicts involving Islamist groups and organized criminal bands.",
-    timeline:[
-      {date:"2009",text:"Boko Haram uprising begins in Maiduguri"},
-      {date:"2014",text:"Chibok kidnapping; peak territorial control"},
-      {date:"2021",text:"Boko Haram leader Shekau killed; ISWAP dominates"},
-      {date:"2024–2025",text:"ISWAP attacks persist; US strikes Lakurawa in Sokoto"},
-    ],
-    source:"ACLED, Africa Center for Strategic Studies",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/boko-haram-nigeria"
-  },
-  {
-    id:8,
-    title:"Sahel — Jihadist Insurgency",
-    region:"West Africa / Sahel",
-    country:"Mali / Burkina Faso / Niger",
-    lat:14.5,lng:1.0,
-    severity:"high",
-    type:"Jihadist Insurgency",
-    started:"2012",
-    deaths_annual:"10,000+",
-    deaths_total:"40,000+",
-    displaced:"5.7 million",
-    status:"Active — Expanding to coastal states",
-    parties:["JNIM (al-Qaeda affiliate)","Islamic State Sahel (ISSP)","Malian/Burkinabe militaries","Wagner/Africa Corps","France (former)"],
-    description:"JNIM and ISSP expanding from Sahel into Benin, Togo, and coastal West Africa. Niger's Tillaberi region deadliest in central Sahel in 2025 (1,200+ fatalities). Jihadists increasingly targeting urban centers. Military juntas in Mali, Burkina Faso, Niger expelled Western forces and invited Russian Wagner/Africa Corps.",
-    timeline:[
-      {date:"2012",text:"AQIM offshoot seizes northern Mali; French intervention"},
-      {date:"2021–2023",text:"Military coups in Mali, Burkina Faso, Niger"},
-      {date:"2023",text:"France expelled; Wagner/Russia fills vacuum"},
-      {date:"2024–2025",text:"JNIM defector to ISSP; expansion into coastal states"},
-    ],
-    source:"ACLED, Africa Center, Crisis Group",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/destabilization-mali-and-the-sahel"
-  },
-  {
-    id:9,
-    title:"Afghanistan — Taliban vs ISKP",
-    region:"South Asia",
-    country:"Afghanistan",
-    lat:33.9,lng:66.0,
-    severity:"high",
-    type:"Jihadist Insurgency",
-    started:"2021 (post-US withdrawal)",
-    deaths_annual:"~800",
-    deaths_total:"200,000+",
-    displaced:"2.9 million",
-    status:"Active — ISKP attacks Taliban",
-    parties:["Taliban govt","ISKP (Islamic State Khorasan)","National Resistance Front"],
-    description:"Post-US withdrawal (2021), Taliban controls Afghanistan but faces ISKP attacks. ISKP has bombed mosques, markets, airports. Taliban cracks down but lacks capacity. Women/girls effectively imprisoned: banned from education, work, public life. Humanitarian crisis severe with 28M+ needing aid.",
-    timeline:[
-      {date:"Aug 2021",text:"US withdrawal; Taliban seizes Kabul in 11 days"},
-      {date:"Aug 2021",text:"ISKP bombs Kabul airport; 13 US soldiers, 170 Afghans killed"},
-      {date:"2022–2024",text:"Ongoing ISKP attacks; Taliban-Pakistan tension grows"},
-      {date:"2025",text:"Pakistan-Taliban border clashes escalate"},
-    ],
-    source:"ACLED, UN Assistance Mission Afghanistan",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/war-afghanistan"
-  },
-  {
-    id:10,
-    title:"Somalia — Al-Shabaab",
-    region:"East Africa",
-    country:"Somalia",
-    lat:5.0,lng:46.0,
-    severity:"high",
-    type:"Jihadist Insurgency",
-    started:"2006",
-    deaths_annual:"~4,000",
-    deaths_total:"500,000+",
-    displaced:"3.8 million",
-    status:"Active — Al-Shabaab controls rural areas",
-    parties:["Somali National Army","Al-Shabaab (AQ affiliate)","ISAM (IS Somalia)","AMISOM/AUSSOM","US forces"],
-    description:"Al-Shabaab controls large rural areas and conducts complex urban attacks in Mogadishu, Baidoa, Kismayo. IS Somalia expanding in Puntland (Golis Mountains). Growing al-Shabaab/Houthi collaboration. US airstrikes ongoing — Dec 2025 strike killed 65+ al-Shabaab fighters. Puntland operations against ISAM accelerated.",
-    timeline:[
-      {date:"2006",text:"Al-Shabaab emerges; ICU conflict with Ethiopia"},
-      {date:"2011",text:"Al-Shabaab expelled from Mogadishu but controls rural areas"},
-      {date:"2023–2024",text:"IS Somalia expands in Puntland Bari region"},
-      {date:"2025",text:"US airstrikes intensify; 65+ militants killed Dec airstrike"},
-    ],
-    source:"ACLED, US Africa Command, Africa Center",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/al-shabaab-somalia"
-  },
-  {
-    id:11,
-    title:"Syria — Post-Assad Conflict",
-    region:"Middle East",
-    country:"Syria",
-    lat:35.0,lng:38.5,
-    severity:"high",
-    type:"Civil War / Post-Regime Transition",
-    started:"2011",
-    deaths_annual:"9,000+",
-    deaths_total:"500,000+",
-    displaced:"7.2 million",
-    status:"Active — Assad fell Dec 2024",
-    parties:["HTS (Hayat Tahrir al-Sham)","Syrian Democratic Forces (SDF/Kurds)","Turkey-backed factions","ISIS remnants","Iran/Hezbollah (weakened)"],
-    description:"Assad regime fell December 2024 after HTS-led offensive. New transitional government faces ISIS resurgence, Kurdish autonomy disputes, Turkey-SDF conflict, and foreign interference. Over 9,000 conflict deaths in past year. Syria's post-Assad transition remains deeply unstable with multiple armed factions competing for control.",
-    timeline:[
-      {date:"2011",text:"Arab Spring protests; Assad cracks down; civil war begins"},
-      {date:"2014–2019",text:"ISIS rise and fall; Russian/US intervention"},
-      {date:"Dec 2024",text:"HTS-led offensive; Assad flees to Russia"},
-      {date:"2025",text:"Transitional govt; ISIS resurges; Turkey-SDF clashes"},
-    ],
-    source:"ACLED, Syria Observatory for Human Rights",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/civil-war-syria"
-  },
-  {
-    id:12,
-    title:"Ethiopia — Internal Conflicts",
-    region:"East Africa",
-    country:"Ethiopia",
-    lat:9.0,lng:40.0,
-    severity:"high",
-    type:"Multiple Civil Conflicts",
-    started:"2020",
-    deaths_annual:"~3,000",
-    deaths_total:"300,000+",
-    displaced:"4.2 million",
-    status:"Fragile — Tigray truce; Amhara/Oromia active",
-    parties:["Ethiopian National Defence Force","Tigray People's Liberation Front","Amhara Fano militia","OLA (Oromo Liberation Army)","Eritrea"],
-    description:"Post-Tigray War (2020–2022, 300,000+ dead), Tigray is nominally at peace but Amhara region faces Fano militia insurgency and Oromia faces OLA rebels. Ethiopia-Eritrea tensions reignited in early 2025 with troop buildups. Most complex conflict environment in Africa.",
-    timeline:[
-      {date:"Nov 2020",text:"Tigray War begins; ENDF vs TPLF"},
-      {date:"Nov 2022",text:"Pretoria peace agreement ends Tigray War"},
-      {date:"2023–2024",text:"Amhara Fano uprising; Oromia OLA attacks"},
-      {date:"Mar 2025",text:"Ethiopia-Eritrea border troop buildups; tensions spike"},
-    ],
-    source:"Crisis Group, ACLED, Africa Center",
-    sourceUrl:"https://www.crisisgroup.org/africa/horn-africa/ethiopia"
-  },
-  {
-    id:13,
-    title:"Israel–Iran War",
-    region:"Middle East",
-    country:"Iran / Israel / Region",
-    lat:31.5,lng:35.5,
-    severity:"high",
-    type:"Interstate Conflict",
-    started:"Apr 2024",
-    deaths_annual:"~1,500",
-    deaths_total:"~2,000",
-    displaced:"—",
-    status:"Active — Direct attacks exchanged",
-    parties:["Israel (IDF)","Iran (IRGC)","Hezbollah (Lebanon)","US forces (support)"],
-    description:"Direct Israel-Iran conflict escalated in April 2024 with Iran's first-ever direct ballistic missile attack on Israel (300+ projectiles). Israel retaliated. Further escalations in October 2024 and 2025. Hezbollah significantly weakened by Israel (leadership assassinated, arsenal degraded). Iranian proxies degraded but Iran retains nuclear program concerns.",
-    timeline:[
-      {date:"Apr 2024",text:"Iran fires 300+ drones/missiles at Israel; Iron Dome intercepts most"},
-      {date:"Oct 2024",text:"Iran launches second missile barrage; Israel strikes Iranian air defence"},
-      {date:"Jun 2025",text:"Israel-Iran war escalation; ballistic missile exchanges"},
-      {date:"2025",text:"US attacks Iran-backed targets; Hezbollah rebuilds slowly"},
-    ],
-    source:"ACLED, ISS Armed Conflict Survey 2025, Statista",
-    sourceUrl:"https://www.iiss.org/publications/armed-conflict-survey/2025/"
+    severity:"high",type:"Civil War",
+    started:"2014",deaths_annual:"3,000",deaths_total:"150,000+",displaced:"4.5 million",
+    status:"Active",
+    parties:["Houthis","Govt","US/UK"],
+    description:"Long-running civil war; Houthi Red Sea blockade.",
+    timeline:[{date:"2014",text:"War starts"},{date:"Recent",text:"Red Sea tensions"}]
   },
   {
     id:14,
     title:"Mexico — Cartel Wars",
-    region:"North America",
-    country:"Mexico",
+    region:"North America",country:"Mexico",
     lat:23.5,lng:-102.0,
-    severity:"high",
-    type:"Criminal / Paramilitary Conflict",
-    started:"2006",
-    deaths_annual:"~30,000",
-    deaths_total:"350,000+",
-    displaced:"400,000+",
-    status:"Active — Cartel landscape reshaping",
-    parties:["CJNG (Jalisco Cartel)","Sinaloa Cartel (fragmented)","Los Chapitos","Gulf Cartel","Mexican Armed Forces"],
-    description:"Mexico ranks among the world's top 10 most violent countries. Cartel fragmentation accelerated after Sinaloa Cartel split in 2024. 18% increase in lethality of inter-cartel clashes. ~500 violent incidents targeting political figures during 2024 elections. US designated cartels as Foreign Terrorist Organizations in 2025.",
-    timeline:[
-      {date:"2006",text:"Calderón declares war on cartels; military deployed"},
-      {date:"2019",text:"Culiacán incident; govt capitulates to Sinaloa cartel"},
-      {date:"2024",text:"Sinaloa cartel splits; 18% rise in lethality"},
-      {date:"2025",text:"US designates cartels as FTOs; threatens military action"},
-    ],
-    source:"ACLED, InSight Crime, US State Dept",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/mexico-drug-war"
+    severity:"high",type:"Criminal War",
+    started:"2006",deaths_annual:"~30,000",deaths_total:"350,000+",displaced:"400,000+",
+    status:"Active",
+    parties:["Cartels","Armed Forces"],
+    description:"Multi-way war between drug cartels for shipping routes.",
+    timeline:[{date:"2006",text:"War declared"},{date:"Recent",text:"Cartel splits"}]
+  },
+  {
+    id:11,
+    title:"Syria — Post-Assad",
+    region:"Middle East",country:"Syria",
+    lat:35.0,lng:38.5,
+    severity:"high",type:"Transition Conflict",
+    started:"2011 (Transition 2024)",deaths_annual:"9,000",deaths_total:"500,000+",displaced:"7.2 million",
+    status:"Active",
+    parties:["HTS","SDF","ISIS","Turkey"],
+    description:"Regime collapse leads to multi-militia power struggle.",
+    timeline:[{date:"Dec 2024",text:"Assad falls"},{date:"Recent",text:"Militia clashes"}]
+  },
+  {
+    id:13,
+    title:"Israel–Iran War",
+    region:"Middle East",country:"Iran / Israel",
+    lat:32.0,lng:42.0,
+    severity:"high",type:"Interstate War",
+    started:"Apr 2024",deaths_annual:"1,500",deaths_total:"2,000",displaced:"0",
+    status:"Active",
+    parties:["Israel","Iran","Proxies"],
+    description:"Direct missile and air strikes between regional powers.",
+    timeline:[{date:"Apr 2024",text:"First strikes"},{date:"Recent",text:"Ballistic volleys"}]
   },
   {
     id:15,
-    title:"Haiti — Gang Violence Crisis",
-    region:"Caribbean",
-    country:"Haiti",
+    title:"Haiti — Gang Crisis",
+    region:"Caribbean",country:"Haiti",
     lat:19.0,lng:-73.4,
-    severity:"high",
-    type:"Gang Conflict / State Collapse",
-    started:"2021",
-    deaths_annual:"4,500+",
-    deaths_total:"10,000+",
-    displaced:"700,000+",
-    status:"Active — MSS controls Port-au-Prince",
-    parties:["Viv Ansanm gang coalition (MSS)","Haitian National Police","Kenya-led Multinational Security Force"],
-    description:"Gang coalition Viv Ansanm (led by Barbeque/MSS) controls ~85% of Port-au-Prince and major highways. Haiti rose sharply in ACLED Conflict Index. Kenya-led multinational security mission deployed but outgunned. Over 4,500 killed from political violence in 2024. State has effectively collapsed in many regions.",
-    timeline:[
-      {date:"Jul 2021",text:"President Moïse assassinated; power vacuum"},
-      {date:"Mar 2024",text:"Gang coalition seizes ports, airports; PM resigns"},
-      {date:"Jun 2024",text:"Kenya-led multinational security force deploys"},
-      {date:"2025",text:"Violence continues; MSS expands territorial control"},
-    ],
-    source:"ACLED, UN Integrated Office in Haiti",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/instability-haiti"
+    severity:"high",type:"Gang War",
+    started:"2021",deaths_annual:"4,500",deaths_total:"10,000+",displaced:"700,000",
+    status:"Active",
+    parties:["Gang Coalitions","Police","MSS"],
+    description:"Gangs control 85% of capital; total state failure.",
+    timeline:[{date:"2021",text:"President killed"},{date:"Recent",text:"Kenya-led mission"}]
   },
   {
-    id:16,
-    title:"Iraq — ISIS Resurgence",
-    region:"Middle East",
-    country:"Iraq",
-    lat:33.2,lng:43.7,
-    severity:"medium",
-    type:"Jihadist Insurgency",
-    started:"2003 (ISIS: 2013)",
-    deaths_annual:"~800",
-    deaths_total:"200,000+",
-    displaced:"1.2 million",
-    status:"Active — ISIS desert insurgency",
-    parties:["Iraqi Security Forces","Kurdish Peshmerga","ISIS","Iran-backed PMF","US coalition"],
-    description:"ISIS lost territorial caliphate in 2019 but continues insurgency in Anbar and Diyala deserts. Attacks on security forces persist. Iran-backed Popular Mobilization Forces (PMF) remain powerful and act independently. US forces targeted repeatedly by Iran-backed groups. Fragile stability.",
-    timeline:[
-      {date:"2013–2014",text:"ISIS seizes Mosul and vast territory"},
-      {date:"2017–2019",text:"Military defeat of ISIS caliphate"},
-      {date:"2020–2023",text:"ISIS insurgency continues in desert areas"},
-      {date:"2024–2025",text:"ISIS attacks increase; US targets Iran-backed PMF"},
-    ],
-    source:"ACLED, CFR, UN Assistance Mission Iraq",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/islamic-state"
+    id:8,
+    title:"Sahel Jihadist War",
+    region:"West Africa",country:"Mali / Burkina / Niger",
+    lat:14.5,lng:1.5,
+    severity:"high",type:"Jihadist War",
+    started:"2012",deaths_annual:"10,000+",deaths_total:"40,000+",displaced:"5.7 million",
+    status:"Active",
+    parties:["Jihadists","Army Juntas","Russia"],
+    description:"Rapidly expanding jihadist insurgency across the Sahel.",
+    timeline:[{date:"2012",text:"Insurgency starts"},{date:"Recent",text:"Wagner deployment"}]
+  },
+  {
+    id:7,
+    title:"Nigeria Insurgency",
+    region:"West Africa",country:"Nigeria",
+    lat:11.5,lng:13.5,
+    severity:"high",type:"Insurgency",
+    started:"2009",deaths_annual:"5,000",deaths_total:"35,000+",displaced:"2.2 million",
+    status:"Active",
+    parties:["Army","Boko Haram","ISWAP"],
+    description:"Overlapping jihadist and criminal conflicts.",
+    timeline:[{date:"2009",text:"Uprising"},{date:"Recent",text:"Banditry grows"}]
+  },
+  {
+    id:10,
+    title:"Somalia Civil War",
+    region:"East Africa",country:"Somalia",
+    lat:5.0,lng:46.0,
+    severity:"high",type:"Civil War",
+    started:"2006",deaths_annual:"4,000",deaths_total:"500,000+",displaced:"3.8 million",
+    status:"Active",
+    parties:["Govt","Al-Shabaab"],
+    description:"Islamic insurgency against federal government.",
+    timeline:[{date:"2006",text:"Shabaab forms"},{date:"Recent",text:"Clan uprisings"}]
+  },
+  {
+    id:12,
+    title:"Ethiopia Conflict",
+    region:"East Africa",country:"Ethiopia",
+    lat:9.0,lng:40.0,
+    severity:"high",type:"Civil War",
+    started:"2020",deaths_annual:"3,000",deaths_total:"300,000+",displaced:"4.2 million",
+    status:"Active",
+    parties:["Govt","Fano","OLA"],
+    description:"Internal regional wars in Amhara and Oromia.",
+    timeline:[{date:"2020",text:"Tigray war"},{date:"Recent",text:"Amhara rebellion"}]
   },
   {
     id:17,
-    title:"Pakistan — TTP & Baloch Insurgency",
-    region:"South Asia",
-    country:"Pakistan",
+    title:"Pakistan Conflict",
+    region:"South Asia",country:"Pakistan",
     lat:30.5,lng:69.0,
-    severity:"medium",
-    type:"Multiple Insurgencies",
-    started:"2007 (TTP)",
-    deaths_annual:"~2,000",
-    deaths_total:"80,000+",
-    displaced:"1.5 million",
-    status:"Active — TTP escalating; India border tension",
-    parties:["Pakistani Armed Forces","Tehreek-e-Taliban Pakistan (TTP)","Balochistan Liberation Army","Afghan Taliban"],
-    description:"TTP (Pakistani Taliban) conducts attacks from Afghan sanctuaries after Taliban takeover. Baloch insurgency active in southwest. Pakistan-India tensions spiked with 2025 military mobilization following Kashmir attacks. ACLED notes Pakistan became more dangerous for civilians in 2024–2025.",
-    timeline:[
-      {date:"2007",text:"TTP founded; begins attacks in Pakistan"},
-      {date:"2021",text:"Afghan Taliban takeover gives TTP safe haven"},
-      {date:"2024",text:"TTP attacks surge; Pakistan airstrikes inside Afghanistan"},
-      {date:"Apr 2025",text:"India-Pakistan military escalation over Kashmir"},
-    ],
-    source:"ACLED, South Asia Terrorism Portal",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/war-afghanistan"
+    severity:"medium",type:"Multiple Insurgencies",
+    started:"2007",deaths_annual:"2,000",deaths_total:"80,000+",displaced:"1.5 million",
+    status:"Active",
+    parties:["Army","TTP","Baloch Rebels"],
+    description:"Jihadist and separatist wars in northwest and southwest.",
+    timeline:[{date:"2007",text:"TTP forms"},{date:"Recent",text:"Border clashes"}]
+  },
+  {
+    id:16,
+    title:"Iraq ISIS Insurgency",
+    region:"Middle East",country:"Iraq",
+    lat:33.2,lng:43.7,
+    severity:"medium",type:"Insurgency",
+    started:"2003",deaths_annual:"800",deaths_total:"200,000+",displaced:"1.2 million",
+    status:"Active",
+    parties:["Army","Peshmerga","ISIS"],
+    description:"Low-level ISIS desert operations; militia friction.",
+    timeline:[{date:"2003",text:"Invasion"},{date:"Recent",text:"ISIS cells active"}]
   },
   {
     id:18,
-    title:"Mozambique — ISAM Insurgency",
-    region:"Southern Africa",
-    country:"Mozambique",
+    title:"Mozambique War",
+    region:"Southern Africa",country:"Mozambique",
     lat:-13.3,lng:40.4,
-    severity:"medium",
-    type:"Jihadist Insurgency",
-    started:"2017",
-    deaths_annual:"~1,000",
-    deaths_total:"5,000+",
-    displaced:"900,000",
-    status:"Active — Cabo Delgado insurgency",
-    parties:["Mozambican military","SADC Mission (Rwanda/Malawi troops)","ISAM/Ansar al-Sunna","SAMIM"],
-    description:"Islamic State affiliate active in Cabo Delgado province, northern Mozambique, near massive natural gas deposits (TotalEnergies LNG project suspended). Rwanda and SADC troops deployed. Town of Mocímboa da Praia repeatedly contested. Gas revenues and local grievances fuel conflict.",
-    timeline:[
-      {date:"2017",text:"Ansar al-Sunna insurgency begins in Cabo Delgado"},
-      {date:"2021",text:"Palma attack; IS claims; TotalEnergies suspends $20B project"},
-      {date:"2021–2022",text:"Rwanda and SADC deploy troops; some gains"},
-      {date:"2024–2025",text:"Insurgency continues; elections trigger post-poll violence"},
-    ],
-    source:"ACLED, Crisis Group",
-    sourceUrl:"https://www.crisisgroup.org/africa/southern-africa/mozambique"
-  },
-  {
-    id:19,
-    title:"Colombia — Dissident FARC / ELN",
-    region:"South America",
-    country:"Colombia",
-    lat:4.5,lng:-74.3,
-    severity:"medium",
-    type:"Guerrilla / Cartel Conflict",
-    started:"1964 (ELN), 2016 (FARC dissidents)",
-    deaths_annual:"~1,200",
-    deaths_total:"260,000+",
-    displaced:"7.7 million",
-    status:"Active — Peace talks stalled",
-    parties:["Colombian Security Forces","FARC dissident groups (EMC)","ELN","drug trafficking orgs"],
-    description:"Post-2016 FARC peace deal, dissident groups (FARC-EMC) rejected terms and continue fighting. ELN also active. President Petro pursued peace negotiations but talks collapsed with FARC dissidents in 2024. Border areas with Venezuela remain highly contested.",
-    timeline:[
-      {date:"2016",text:"Historic FARC peace agreement signed"},
-      {date:"2019",text:"FARC dissidents (EMC) reject peace; resume conflict"},
-      {date:"2022–2024",text:"Petro govt opens peace talks with EMC and ELN"},
-      {date:"2024–2025",text:"EMC peace talks collapsed; ELN talks fragile"},
-    ],
-    source:"ACLED, InSight Crime, Crisis Group",
-    sourceUrl:"https://www.crisisgroup.org/latin-america-caribbean/andes/colombia"
-  },
-  {
-    id:20,
-    title:"Libya — Fragmented Conflict",
-    region:"North Africa",
-    country:"Libya",
-    lat:27.0,lng:17.5,
-    severity:"medium",
-    type:"Civil Conflict / Militia War",
-    started:"2011",
-    deaths_annual:"~600",
-    deaths_total:"30,000+",
-    displaced:"135,000",
-    status:"Fragile — West/East division",
-    parties:["GNU (Tripoli-based)","Libyan National Army (Haftar)","Misrata militias","Wagner/Russia","Turkey-backed forces"],
-    description:"Libya remains split between GNU in Tripoli and LNA (Haftar) controlling East/South. Russian Wagner Group (Africa Corps) and Turkish forces entrenched. Intermittent militia clashes in Tripoli. Drone use widespread — Libya is major theater for drone warfare in Africa.",
-    timeline:[
-      {date:"2011",text:"NATO-backed uprising; Gaddafi killed"},
-      {date:"2014",text:"Second civil war; country splits in two"},
-      {date:"2020",text:"UN ceasefire; Turkish/Russian intervention"},
-      {date:"2023–2025",text:"Periodic clashes; no political resolution"},
-    ],
-    source:"ACLED, UN Panel of Experts Libya",
-    sourceUrl:"https://www.cfr.org/global-conflict-tracker/conflict/civil-war-libya"
+    severity:"medium",type:"Jihadist War",
+    started:"2017",deaths_annual:"1,000",deaths_total:"5,000+",displaced:"900,000",
+    status:"Active",
+    parties:["Army","ISAM"],
+    description:"Islamic state insurgency in gas-rich North.",
+    timeline:[{date:"2017",text:"Attack on Palma"},{date:"Recent",text:"Gas projects resumed"}]
   },
   {
     id:21,
-    title:"Cameroon — Anglophone Crisis",
-    region:"West/Central Africa",
-    country:"Cameroon",
+    title:"Cameroon Separatism",
+    region:"Central Africa",country:"Cameroon",
     lat:5.5,lng:10.2,
-    severity:"medium",
-    type:"Separatist Conflict",
-    started:"2017",
-    deaths_annual:"~1,000",
-    deaths_total:"6,000+",
-    displaced:"700,000",
-    status:"Active — Stalemate",
-    parties:["Cameroon military","Ambazonian separatist groups (SOCADEF, AGC, etc.)","Boko Haram (North)"],
-    description:"Anglophone separatists in Northwest and Southwest Cameroon seek independent state 'Ambazonia'. Ghost town operations, school shutdowns, economic disruption. Fragmented separatist movement with 100+ armed factions. No peace process underway. Also faces Boko Haram in the Far North region.",
-    timeline:[
-      {date:"2016",text:"Lawyer/teacher strikes; Francophone govt crackdown"},
-      {date:"2017",text:"Armed separatist uprising begins"},
-      {date:"2019",text:"Major National Dialogue; separatists reject results"},
-      {date:"2020–2025",text:"Stalemate; human rights abuses by all parties"},
-    ],
-    source:"ACLED, ICG, Amnesty International",
-    sourceUrl:"https://www.crisisgroup.org/africa/central-africa/cameroon"
-  },
-  {
-    id:22,
-    title:"Myanmar / Bangladesh — Arakan Army",
-    region:"Southeast Asia / South Asia",
-    country:"Bangladesh / Myanmar border",
-    lat:21.0,lng:92.5,
-    severity:"medium",
-    type:"Ethnic Armed Conflict",
-    started:"2009 (escalated 2024)",
-    deaths_annual:"~500",
-    deaths_total:"~3,000",
-    displaced:"200,000",
-    status:"Active — Arakan Army controls Rakhine",
-    parties:["Arakan Army (AA)","Myanmar Military","Bangladesh border tension"],
-    description:"Arakan Army (ethnic Rakhine Buddhist) controls most of Rakhine State after 2024 offensive. Rohingya Muslims caught between conflicting forces. Bangladesh-Myanmar tensions at border. Stray shells and fighting spilling across border. New Rakhine capital under AA administration.",
-    timeline:[
-      {date:"2023",text:"AA resumes offensive in Rakhine after ceasefire ends"},
-      {date:"2024",text:"AA captures 17 of 17 townships in Rakhine State"},
-      {date:"2025",text:"AA consolidates control; Myanmar military besieged"},
-    ],
-    source:"ACLED, ICG",
-    sourceUrl:"https://www.crisisgroup.org/asia/south-east-asia/myanmar"
+    severity:"medium",type:"Separatist War",
+    started:"2017",deaths_annual:"1,000",deaths_total:"6,000+",displaced:"700,000",
+    status:"Active",
+    parties:["Army","Ambazonians"],
+    description:"Anglophone separatists vs Francophone government.",
+    timeline:[{date:"2017",text:"Uprising"},{date:"Recent",text:"Ghost-town protests"}]
   },
   {
     id:23,
-    title:"Burkina Faso — Jihadist Crisis",
-    region:"West Africa / Sahel",
-    country:"Burkina Faso",
+    title:"Burkina Faso War",
+    region:"West Africa",country:"Burkina Faso",
     lat:12.4,lng:-1.5,
-    severity:"high",
-    type:"Jihadist Insurgency",
-    started:"2015",
-    deaths_annual:"~5,000",
-    deaths_total:"20,000+",
-    displaced:"2.1 million",
-    status:"Active — 40% of territory lost",
-    parties:["Burkinabe military (MPSR junta)","JNIM","ISSP","Volunteer Forces (VDP)","Wagner/Africa Corps"],
-    description:"Burkina Faso has lost an estimated 40% of its territory to jihadist control. JNIM besieges multiple provincial capitals. Junta expelled French forces and invited Wagner/Russia. Humanitarian access severely restricted — some areas unreachable for months. One of the world's fastest-deteriorating conflicts.",
-    timeline:[
-      {date:"2015",text:"First jihadist attacks; spillover from Mali"},
-      {date:"2022",text:"Two coups; junta invites Wagner, expels France"},
-      {date:"2023",text:"JNIM surges; attacks on Ouagadougou outskirts"},
-      {date:"2024–2025",text:"Territory losses continue; humanitarian crisis deepens"},
-    ],
-    source:"ACLED, Africa Center for Strategic Studies",
-    sourceUrl:"https://www.crisisgroup.org/africa/west-africa/burkina-faso"
-  },
-  {
-    id:24,
-    title:"Venezuela — Internal Repression",
-    region:"South America",
-    country:"Venezuela",
-    lat:8.0,lng:-66.0,
-    severity:"low",
-    type:"Political Repression / Gang Violence",
-    started:"2017",
-    deaths_annual:"~300",
-    deaths_total:"~3,000",
-    displaced:"7.7 million",
-    status:"Active — Post-election crackdown",
-    parties:["Maduro government / SEBIN","Tren de Aragua gang","FARC / ELN (border areas)","Opposition movements"],
-    description:"Maduro regime disputed re-election in July 2024 triggered mass protests and violent crackdown. Tren de Aragua gang exported violence to US and Latin America. ELN and FARC operate in border regions under protection arrangements. Venezuela is the world's largest refugee crisis.",
-    timeline:[
-      {date:"2017",text:"Maduro consolidates power; mass protests crushed"},
-      {date:"2019",text:"US recognizes Guaidó; sanctions bite"},
-      {date:"Jul 2024",text:"Disputed election; opposition claims fraud; crackdown"},
-      {date:"2025",text:"Dissidents imprisoned; Tren de Aragua designated FTO by US"},
-    ],
-    source:"ACLED, Human Rights Watch",
-    sourceUrl:"https://www.crisisgroup.org/latin-america-caribbean/andes/venezuela"
+    severity:"high",type:"Insurgency",
+    started:"2015",deaths_annual:"5,000",deaths_total:"20,000+",displaced:"2.1 million",
+    status:"Active",
+    parties:["Junta","JNIM","ISSP"],
+    description:"World's least-observed and most lethal insurgency.",
+    timeline:[{date:"2015",text:"Spillover"},{date:"Recent",text:"Massacre reports"}]
   },
   {
     id:25,
-    title:"South Sudan — Renewed Tensions",
-    region:"East Africa",
-    country:"South Sudan",
+    title:"South Sudan",
+    region:"East Africa",country:"South Sudan",
     lat:7.0,lng:30.5,
-    severity:"medium",
-    type:"Political / Ethnic Violence",
-    started:"2013",
-    deaths_annual:"~1,500",
-    deaths_total:"400,000+",
-    displaced:"4.2 million",
-    status:"Fragile — Kiir–Machar tensions rising",
-    parties:["SPLM/A (Kiir)","SPLM/A-IO (Machar)","Various ethnic militias","UN peacekeepers"],
-    description:"South Sudan's 2018 Revitalized Peace Agreement is fraying. Tension between President Kiir and VP Machar rising in 2025. Communal violence in Upper Nile, Jonglei, Greater Equatoria. DRC crisis spilling over. AU failed to broker progress. Fragmented militias complicate any settlement.",
-    timeline:[
-      {date:"2013",text:"Civil war erupts; 400,000+ die over 5 years"},
-      {date:"2018",text:"Revitalized peace agreement signed"},
-      {date:"2021–2024",text:"Peace implementation stalls; elections postponed"},
-      {date:"2025",text:"Kiir-Machar split deepens; AU mediation fails"},
-    ],
-    source:"Crisis Group, ACLED",
-    sourceUrl:"https://www.crisisgroup.org/africa/horn-africa/south-sudan"
+    severity:"medium",type:"Internal Conflict",
+    started:"2013",deaths_annual:"1,500",deaths_total:"400,000+",displaced:"4.2 million",
+    status:"Active",
+    parties:["Kiir forces","Machar forces"],
+    description:"Fragile peace broken by frequent clan-level clashes.",
+    timeline:[{date:"2013",text:"War erupts"},{date:"Recent",text:"Election delays"}]
   }
 ];
+
+const DYNAMIC_POOL = [
+  {
+    id:101,
+    title:"Global DNS Outage",
+    region:"Global",
+    country:"Digital Space",
+    lat:35.0,lng:-100.0,
+    severity:"extreme",
+    type:"Network Failure",
+    description:"A unprecedented coordinated DDoS attack targeting global Tier-1 Internet Service Providers.",
+    parties:["Unknown APT Groups","Global ISPs"],
+    source:"NetBlocks Monitoring"
+  },
+  {
+    id:102,
+    title:"Finance System Breach",
+    region:"Europe",
+    country:"International Markets",
+    lat:51.0,lng:10.0,
+    severity:"high",
+    type:"Cyber Sabotage",
+    description:"Widespread disruption of SWIFT gateway reported across major European banks.",
+    parties:["State-level Sabotage Units","National Grid Operators"],
+    source:"FS-ISAC Alerts"
+  }
+];
+
+let CONFLICTS = [];
+
+function refreshConflicts() {
+  const now = new Date();
+  const SIX_HOURS = 6 * 60 * 60 * 1000;
+  const cycleIndex = Math.floor(now.getTime() / SIX_HOURS);
+  
+  const updatedStatics = STATIC_CONFLICTS.map(c => {
+    const hoursSinceCycleStart = (now.getTime() % SIX_HOURS) / (60 * 60 * 1000);
+    const lastUpdateStr = hoursSinceCycleStart < 1 ? "Minutes ago" : Math.floor(hoursSinceCycleStart) + " hours ago";
+    const newC = JSON.parse(JSON.stringify(c));
+    if (newC.timeline && newC.timeline.length > 0) newC.timeline[newC.timeline.length - 1].date = lastUpdateStr;
+    newC.status = `Active — Updated ${lastUpdateStr}`;
+    return newC;
+  });
+
+  const selectedDynamics = [];
+  for (let i = 0; i < 2; i++) {
+    const poolIdx = (cycleIndex + i) % DYNAMIC_POOL.length;
+    const dynamicEvent = JSON.parse(JSON.stringify(DYNAMIC_POOL[poolIdx]));
+    dynamicEvent.started = (i === 0) ? "Today" : `${i * 2} hours ago`;
+    dynamicEvent.deaths_annual = "0";
+    dynamicEvent.deaths_total = "0";
+    dynamicEvent.displaced = "N/A";
+    dynamicEvent.status = "Ongoing — Real Time Monitoring";
+    dynamicEvent.timeline = [{ date: dynamicEvent.started, text: "Incident detected." }];
+    dynamicEvent.sourceUrl = "#";
+    selectedDynamics.push(dynamicEvent);
+  }
+  CONFLICTS = [...updatedStatics, ...selectedDynamics];
+}
 
 /* ===== SEVERITY CONFIG ===== */
 const SEV_COLORS = {extreme:'#ff2d2d', high:'#ff7a00', medium:'#ffcc00', low:'#3399ff'};
@@ -1414,25 +1047,13 @@ function renderBottomStats(){
   `).join('') + `<div class="bs-item"><div class="bs-val" style="color:var(--text)">${CONFLICTS.length}</div><div class="bs-lbl">total</div></div>`;
 }
 
-/* ===== GOOGLE TRANSLATE ===== */
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'en',
-    includedLanguages: 'en,ru',
-    autoDisplay: false
-  }, 'google_translate_element');
-}
-
-function changeLanguage(lang, btn) {
-  const selectField = document.querySelector("select.goog-te-combo");
-  if (selectField) {
-    selectField.value = lang;
-    selectField.dispatchEvent(new Event("change"));
+/* ===== CLOCK ===== */
+function startClock(){
+  function tick(){
+    const now=new Date();
+    document.getElementById('clock-time').textContent=now.toUTCString().slice(17,25);
   }
-  
-  // Highlight active button
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  tick(); setInterval(tick,1000);
 }
 
 /* ===== MOBILE SIDEBAR ===== */
@@ -1450,10 +1071,30 @@ function closeSidebar(){
 
 /* ===== INIT ===== */
 window.addEventListener('DOMContentLoaded',()=>{
+  refreshConflicts();
   initMap();
   renderSidebar();
   updateHeaderStats();
   renderBottomStats();
+  startClock();
+  
+  // Set up 6-hour cycle check (every 1 minute)
+  let lastCycleIndex = Math.floor(new Date().getTime() / (6*60*60*1000));
+  setInterval(()=>{
+    const currentIdx = Math.floor(new Date().getTime() / (6*60*60*1000));
+    if(currentIdx !== lastCycleIndex){
+      lastCycleIndex = currentIdx;
+      refreshConflicts();
+      // Update markers and sidebar
+      Object.values(markers).forEach(m => map.removeLayer(m));
+      markers = {};
+      addMarkersAll();
+      renderSidebar();
+      updateHeaderStats();
+      renderBottomStats();
+    }
+  }, 60000);
+
   document.getElementById('hamburger').addEventListener('click',toggleSidebar);
   window.addEventListener('resize',()=>map&&map.invalidateSize());
 });
