@@ -417,10 +417,6 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
           <div class="stat-pill-lbl">Est. Deaths/Year</div>
         </div>
       </div>
-      <div class="clock-wrap">
-        <div class="clock-time" id="clock-time">00:00:00</div>
-        <div class="utc" style="font-size:9px;color:var(--text-dim);letter-spacing:0.06em">UTC</div>
-      </div>
     </div>
   </header>
 
@@ -469,31 +465,6 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
     <!-- MAP -->
     <div class="map-wrap">
       <div id="map"></div>
-
-      <!-- LEGEND -->
-      <div class="map-legend">
-        <div class="legend-title">Severity Level</div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--red)"></div>
-          <span>Extreme (War)</span>
-          <span class="legend-count" id="leg-extreme">—</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--orange)"></div>
-          <span>High</span>
-          <span class="legend-count" id="leg-high">—</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--yellow)"></div>
-          <span>Medium</span>
-          <span class="legend-count" id="leg-medium">—</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:var(--blue)"></div>
-          <span>Low</span>
-          <span class="legend-count" id="leg-low">—</span>
-        </div>
-      </div>
 
       <!-- DETAIL PANEL -->
       <div class="detail-panel" id="detail-panel">
@@ -892,7 +863,6 @@ function renderSidebar(){
       </div>
     </div>
   `).join('');
-  updateLegendCounts();
 }
 
 function getFiltered(){
@@ -1019,12 +989,6 @@ function closeDetail(){
   setTimeout(()=>map.invalidateSize(), 300);
 }
 
-/* ===== LEGEND COUNTS ===== */
-function updateLegendCounts(){
-  ['extreme','high','medium','low'].forEach(s=>{
-    document.getElementById('leg-'+s).textContent = CONFLICTS.filter(c=>c.severity===s).length;
-  });
-}
 
 /* ===== HEADER STATS ===== */
 function updateHeaderStats(){
@@ -1047,14 +1011,6 @@ function renderBottomStats(){
   `).join('') + `<div class="bs-item"><div class="bs-val" style="color:var(--text)">${CONFLICTS.length}</div><div class="bs-lbl">total</div></div>`;
 }
 
-/* ===== CLOCK ===== */
-function startClock(){
-  function tick(){
-    const now=new Date();
-    document.getElementById('clock-time').textContent=now.toUTCString().slice(17,25);
-  }
-  tick(); setInterval(tick,1000);
-}
 
 /* ===== MOBILE SIDEBAR ===== */
 function toggleSidebar(){
@@ -1076,7 +1032,6 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderSidebar();
   updateHeaderStats();
   renderBottomStats();
-  startClock();
   
   // Set up 6-hour cycle check (every 1 minute)
   let lastCycleIndex = Math.floor(new Date().getTime() / (6*60*60*1000));
@@ -1097,7 +1052,31 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   document.getElementById('hamburger').addEventListener('click',toggleSidebar);
   window.addEventListener('resize',()=>map&&map.invalidateSize());
+
+  // Language Switcher Functional
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.textContent.toLowerCase();
+      const combo = document.querySelector('.goog-te-combo');
+      if (combo) {
+        combo.value = lang;
+        combo.dispatchEvent(new Event('change'));
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b === btn));
+      }
+    });
+  });
 });
+
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,ru',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
 </script>
+<div id="google_translate_element" style="display:none"></div>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
