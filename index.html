@@ -344,7 +344,6 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
   .sidebar.open{transform:translateX(0)}
   .hamburger{display:flex}
   .stat-pill{display:none}
-  .map-legend{bottom:60px}
   .bottom-stats{display:flex}
   .detail-panel{
     top:auto;bottom:0;left:0;right:0;
@@ -361,9 +360,36 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
 @media(max-width:480px){
   .sidebar{width:100%;max-width:360px}
   .detail-panel{width:100%}
-  .clock-wrap .utc{display:none}
   .logo-sub{display:none}
-  .map-legend{bottom:54px;right:8px;padding:8px 12px}
+  .logo-text{display:none}
+  .topbar{padding:0 8px}
+  .topbar-left{gap:10px}
+  .live-badge{padding:4px 6px; gap:4px}
+  .live-text{font-size:9px}
+  .lang-btn{padding:5px 6px}
+}
+body, html {
+  top: 0px !important;
+  margin-top: 0px !important;
+  position: static !important;
+}
+
+/* Ruthlessly hide Google Translate top bar and hover tooltips */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+#goog-gt-tt, 
+.goog-te-balloon-frame,
+div#goog-gt-,
+div.skiptranslate,
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
 }
   </style>
 </head>
@@ -400,8 +426,8 @@ button{font-family:'Syne',sans-serif;cursor:pointer;border:none;background:none;
         <span class="live-text">LIVE</span>
       </div>
       <div class="lang-switcher">
-        <button class="lang-btn active">EN</button>
-        <button class="lang-btn">RU</button>
+        <button class="lang-btn active" onclick="changeLanguage('en', this)">EN</button>
+        <button class="lang-btn" onclick="changeLanguage('ru', this)">RU</button>
       </div>
     </div>
     <div class="topbar-right">
@@ -1012,6 +1038,27 @@ function renderBottomStats(){
 }
 
 
+/* ===== GOOGLE TRANSLATE ===== */
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,ru',
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+
+function changeLanguage(lang, btn) {
+  const selectField = document.querySelector("select.goog-te-combo");
+  if (selectField) {
+    selectField.value = lang;
+    selectField.dispatchEvent(new Event("change"));
+  }
+  
+  // Highlight active button
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
 /* ===== MOBILE SIDEBAR ===== */
 function toggleSidebar(){
   const s=document.getElementById('sidebar');
@@ -1052,29 +1099,7 @@ window.addEventListener('DOMContentLoaded',()=>{
 
   document.getElementById('hamburger').addEventListener('click',toggleSidebar);
   window.addEventListener('resize',()=>map&&map.invalidateSize());
-
-  // Language Switcher Functional
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const lang = btn.textContent.toLowerCase();
-      const combo = document.querySelector('.goog-te-combo');
-      if (combo) {
-        combo.value = lang;
-        combo.dispatchEvent(new Event('change'));
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b === btn));
-      }
-    });
-  });
 });
-
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'en',
-    includedLanguages: 'en,ru',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-    autoDisplay: false
-  }, 'google_translate_element');
-}
 </script>
 <div id="google_translate_element" style="display:none"></div>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
